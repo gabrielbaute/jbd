@@ -2,10 +2,14 @@ import re
 import logging
 import yt_dlp
 from pathlib import Path
+from uuid import UUID, uuid4
 from typing import List, Optional, Dict
 
-from app.enums import Format, Bitrate
+from app.errors import StorageError
+
 from app.settings import AppSettings
+from app.enums import Format, Bitrate
+from app.services.lrclib_service import LyricService
 from app.services.tag_service import AudioTaggerService
 from app.services.cover_service import CoverDownloaderService
 from app.schemas import AlbumTrackResponse, AlbumResponse, AudioFile, AudioFilesList
@@ -29,6 +33,7 @@ class DownloaderService:
         self.album_path: Path = self._build_album_path()
         self.cover_service: CoverDownloaderService = CoverDownloaderService(settings)
         self.tag_service: AudioTaggerService = AudioTaggerService()
+        self.lyrics_service: LyricService = LyricService(settings)
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def _sanitize_filename(self, filename: str) -> str:
@@ -76,7 +81,6 @@ class DownloaderService:
         album_path.mkdir(parents=True, exist_ok=True)
         
         return album_path
-
 
     def _build_output_path(self, track: AlbumTrackResponse, format_ext: Format = Format.MP3) -> Path:
         """Construye la ruta de salida para un álbum específico.
@@ -153,6 +157,7 @@ class DownloaderService:
                 ydl.download(str(track_data.url_canonical))
                 self.logger.info(f"Descarga completada: {track_data.title}")
                 return AudioFile(
+                    id=uuid4(),
                     file_path=output_path,
                     file_name=track_data.title,
                     file_format=format_ext,
@@ -161,7 +166,40 @@ class DownloaderService:
             except Exception as e:
                 self.logger.error(f"Error descargando {track_data.title} desde {track_data.url_canonical}: {e}")
                 return None
-            
+
+    def _download_lyrics(self, track: AlbumTrackResponse, output_path: Path) -> Optional[Path]:
+        """
+        Descarga y guarda el archivo de letras.
+        
+        Args:
+           track (AlbumTrackResponse): Objeto track generado desde youtube.
+           output_path (Path): Ruta de salida para el archivo de letras.
+        
+        Returns:
+           Optional[Path]: Ruta al archivo de letras descargado.
+        
+        Raises:
+            StorageError: Si ocurre un error al crear el archivo de letras.
+        """
+        # 1. Obtener la letra
+        lyrics = self.lyrics_service.get_lyrics_with_fallback(track)
+        
+        # 2. Si no obtenemos la letra, salimos
+        if not lyrics:
+            self.logger.warning(f"No se encontraron letras para {track.title}")
+            return None
+        
+        # 3. Creamos el archivo.
+        try:
+            lrc_path = output_path.with_suffix(".lrc")
+            lrc_path.write_text(lyrics, encoding="utf-8")
+
+            if lrc_path.stat().st_size > 0:
+                return lrc_path
+        except Exception as e:
+            self.logger.error(f"Error al crear el archivo de letras: {e}")
+            raise StorageError(f"No se pudo crear el archivo de letras: {e}")
+
     def download_album_to_mp3(
             self, 
             bitrate: Bitrate = Bitrate.B_128K,
@@ -178,17 +216,25 @@ class DownloaderService:
             AudioFilesList: Lista de objetos AudioFile con la información de los archivos descargados.
         """
         tracks: List[AudioFile] = []
+
+        # 1. Descargar el cover
         cover = self.cover_service.download_image(self.album_data.thumbnail, self.album_path / "cover.jpg")
         if cover:
             cover_data = cover.read_bytes()
         
+        # 2. Descargar las pistas
         for track in self.album_data.tracks:
             audio_file = self._download_track(track, format_ext=Format.MP3, bitrate=bitrate)
             
             if audio_file:
                 self.tag_service.set_mp3_tags(audio_file, track, cover_data=cover_data, genre=genre)
-            
-            if audio_file:
+                
+                # 3. Obtenemos el archivo de letras.
+                lyrics_path = self._download_lyrics(track, audio_file.file_path)
+                
+                if lyrics_path:
+                    audio_file.lyric_path = lyrics_path
+                
                 tracks.append(audio_file)
         
         return AudioFilesList(

@@ -1,3 +1,4 @@
+from app.services.lrclib_service import LyricService
 from app.services.parse_service import ParserService
 from app.services.tag_service import AudioTaggerService
 from app.services.youtube_service import YouTubeService
