@@ -1,8 +1,10 @@
 import re
 import yt_dlp
 import logging
+import asyncio
 from uuid import uuid4
 from pathlib import Path
+from functools import partial
 from typing import List, Optional, Dict, Callable, Coroutine, Any
 
 from app.errors import StorageError
@@ -325,6 +327,15 @@ class DownloaderService:
     ) -> AudioFilesList:
         """
         Método unificado para descargar álbumes con soporte de progreso.
+
+        Args:
+            format_ext (Format, optional): Formato de audio deseado.
+            bitrate (Bitrate, optional): Calidad de audio deseada.
+            genre (str, optional): Género musical.
+            progress_cb (Optional[ProgressCallback], optional): Callback de progreso.
+        
+        Returns:
+            AudioFilesList: Lista de objetos AudioFile con la información de los archivos descargados.
         """
         self.progress_callback = progress_cb
         tracks: List[AudioFile] = []
@@ -357,6 +368,79 @@ class DownloaderService:
         
         await self._emit_progress(total_tracks, total_tracks, "Completado", "Finalizado")
         
+        return AudioFilesList(
+            count=len(tracks),
+            total_size=sum([t.file_size for t in tracks]),
+            audio_files=tracks
+        )
+    
+    async def async_download_album(
+        self, 
+        format_ext: Format = Format.MP3,
+        bitrate: Bitrate = Bitrate.B_128K,
+        genre: Optional[str] = None,
+        progress_cb: Optional[ProgressCallback] = None
+    ) -> AudioFilesList:
+        """
+        Método unificado optimizado para no bloquear el event loop.
+
+        Args:
+            format_ext (Format, optional): Formato de audio deseado.
+            bitrate (Bitrate, optional): Calidad de audio deseada.
+            genre (str, optional): Género musical.
+            progress_cb (Optional[ProgressCallback], optional): Callback de progreso.
+
+        Returns:
+            AudioFilesList: Lista de objetos AudioFile con la información de los archivos descargados.
+        """
+        self.progress_callback = progress_cb
+        tracks: List[AudioFile] = []
+        total_tracks = len(self.album_data.tracks)
+        loop = asyncio.get_running_loop()
+
+        # 1. Cover (operación de red, mejor en executor si es bloqueante)
+        await self._emit_progress(0, total_tracks, "Descargando portada...", "Metadata")
+        cover = await loop.run_in_executor(None, self.cover_service.download_image, self.album_data.thumbnail, self.album_path / "cover.jpg")
+        cover_data = cover.read_bytes() if cover else None
+
+        # 2. Bucle de Tracks
+        for index, track in enumerate(self.album_data.tracks, 1):
+            # Este emit_progress ahora sí llegará al cliente porque el loop estará libre
+            await self._emit_progress(index - 1, total_tracks, f"Descargando...", track.title)
+            
+            # Ejecutamos la descarga pesada en un hilo separado
+            download_func = partial(self._download_track, track, format_ext, bitrate)
+            audio_file = await loop.run_in_executor(None, download_func)
+            await asyncio.sleep(0.01)
+            
+            if audio_file:
+                # El etiquetado también es bloqueante (I/O de disco), lo ideal es executor
+                
+                if format_ext == Format.MP3:
+                    await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas ID3...", track.title)
+                    tag_func = partial(self.tag_service.set_mp3_tags, audio_file, track, genre, cover_data)
+                    await asyncio.sleep(0.01)
+                else:
+                    await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas MP4...", track.title)
+                    tag_func = partial(self.tag_service.set_m4a_tags, audio_file, track, cover_data, genre)
+                    await asyncio.sleep(0.01)
+                
+                await loop.run_in_executor(None, tag_func)
+                
+                # Letras (I/O bloqueante)
+                await self._emit_progress(index - 1, total_tracks, f"Buscando letras en LRCLIB...", track.title)
+                lyrics_func = partial(self._download_lyrics, track, audio_file.file_path)
+                lyrics_path = await loop.run_in_executor(None, lyrics_func)
+                await asyncio.sleep(0.01)
+                
+                if lyrics_path:
+                    audio_file.lyric_path = lyrics_path
+                    await self._emit_progress(index - 1, total_tracks, f"Letras sincronizadas guardadas.", track.title)
+                    await asyncio.sleep(0.01)
+                
+                tracks.append(audio_file)
+        
+        await self._emit_progress(total_tracks, total_tracks, "Completado", "Finalizado")
         return AudioFilesList(
             count=len(tracks),
             total_size=sum([t.file_size for t in tracks]),
