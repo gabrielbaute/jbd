@@ -19,6 +19,7 @@ class AppSettings(BaseSettings):
     LOGS_PATH: Path = BASE_PATH / "logs"
     SETTINGS_PATH: Path = BASE_PATH / "settings"
     INSTANCE_PATH: Path = BASE_PATH / "instance"
+    STATIC_PATH: Path = BASE_PATH / "static"
 
     # Directorios dentro de data y para los archivos de usuario
     TMP_PATH: Path = DATA_PATH / "tmp"
