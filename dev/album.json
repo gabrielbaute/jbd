@@ -1,0 +1,528 @@
+{
+    "title": "The God Machine",
+    "type": "Album",
+    "thumbnails": [
+        {
+            "url": "https://lh3.googleusercontent.com/_rfdG9ooj6EQTF2zCeYk1i2TwXjHWU2KLk98-MX0N4hb4dzNtgBX31AWaYEQ_XsomLziI7ufJu7tPFNX=w60-h60-l90-rj",
+            "width": 60,
+            "height": 60
+        },
+        {
+            "url": "https://lh3.googleusercontent.com/_rfdG9ooj6EQTF2zCeYk1i2TwXjHWU2KLk98-MX0N4hb4dzNtgBX31AWaYEQ_XsomLziI7ufJu7tPFNX=w120-h120-l90-rj",
+            "width": 120,
+            "height": 120
+        },
+        {
+            "url": "https://lh3.googleusercontent.com/_rfdG9ooj6EQTF2zCeYk1i2TwXjHWU2KLk98-MX0N4hb4dzNtgBX31AWaYEQ_XsomLziI7ufJu7tPFNX=w226-h226-l90-rj",
+            "width": 226,
+            "height": 226
+        },
+        {
+            "url": "https://lh3.googleusercontent.com/_rfdG9ooj6EQTF2zCeYk1i2TwXjHWU2KLk98-MX0N4hb4dzNtgBX31AWaYEQ_XsomLziI7ufJu7tPFNX=w544-h544-l90-rj",
+            "width": 544,
+            "height": 544
+        }
+    ],
+    "isExplicit": false,
+    "description": "The God Machine is the twelfth studio album by the German power metal band Blind Guardian, released on 2 September 2022 through Nuclear Blast. This is the band's first regular studio album in seven years, following Beyond the Red Mirror, marking the longest gap between two Blind Guardian studio albums.\nThe album's cover art was illustrated by American artist Peter Mohrbacher as part of the Angelarium project.\n\nFrom Wikipedia (",
+    "year": "2022",
+    "artists": [
+        {
+            "name": "Blind Guardian",
+            "id": "UCevshEcA1yKVc0uucxo4dfg"
+        }
+    ],
+    "trackCount": 9,
+    "duration": "51 minutes",
+    "audioPlaylistId": "OLAK5uy_mrUmnJrX4QzJd6GeOuqcqT8EUMH1C0eTU",
+    "likeStatus": "INDIFFERENT",
+    "tracks": [
+        {
+            "videoId": "d1mkqz422lg",
+            "title": "Deliver Us From Evil",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpJ2q0vPow8Djp0e7GtPxSnk7Oly41DvzBAtCLVCddRABNZg45nAabehcU4IhVkJaXrqMha5DOowfGPGj4KKO9ACf5yKXw"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_OMV",
+            "views": "2.5M plays",
+            "trackNumber": 1,
+            "duration": "5:22",
+            "duration_seconds": 322
+        },
+        {
+            "videoId": "lndG8BiZCmM",
+            "title": "Damnation",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpLegCAow3qZvC3SZHCRVkeiqXeLjFgIYCVOPexPN7oGPGbVRYucVSKBC2ol235_TpGI9t3vpBJ1b0BvJnnp6eEhNL3Lhw"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_ATV",
+            "views": "523K plays",
+            "trackNumber": 2,
+            "duration": "5:21",
+            "duration_seconds": 321
+        },
+        {
+            "videoId": "ReaFJ_MD2cs",
+            "title": "Secrets Of The American Gods",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpJQ9bGO29DsEgy7J7iKtiQFDnxya49NQXnxEA-8ok6t-lbgnm8grRjK2HeGlW4UlWY9Mfgxa3sJkolz2dr4OOousa5MhA"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_OMV",
+            "views": "2.5M plays",
+            "trackNumber": 3,
+            "duration": "7:29",
+            "duration_seconds": 449
+        },
+        {
+            "videoId": "vUpF6VjIC-8",
+            "title": "Violent Shadows",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpJrRkPLkJwhDk0kjUcPnig3EfgjXXqHF-qMCJ3YbWbS4_sfMGZ3Y3NLsoXDeiMldfvME1NXrIUaIL3eoOmKwYOIw-TvJg"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_OMV",
+            "views": "1.2M plays",
+            "trackNumber": 4,
+            "duration": "4:18",
+            "duration_seconds": 258
+        },
+        {
+            "videoId": "1d7NDS0agWA",
+            "title": "Life Beyond The Spheres",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpIOKWLlYhKm_t-94YkcrDiVJqgObC4R2sNwIRlZYRKpEe0b-phb8AZKb5DGRlNbQATsKydi9IQW89XJW-e5QdoHy7lOgg"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_OMV",
+            "views": "649K plays",
+            "trackNumber": 5,
+            "duration": "6:03",
+            "duration_seconds": 363
+        },
+        {
+            "videoId": "u60SpI8qsd4",
+            "title": "Architects Of Doom",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpIwgAF7nPxsvl0yKc3if8B07saS2iH0YWq4_-8W4CnPBiZ3VyYiWbq-c9tHK0rAbKLO-wGZzg0GJi489mamOjJJmrS8xQ"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_OMV",
+            "views": "883K plays",
+            "trackNumber": 6,
+            "duration": "6:21",
+            "duration_seconds": 381
+        },
+        {
+            "videoId": "4YMnTWmPuFk",
+            "title": "Let It Be No More",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpJOmySloTQLAFf7zUUpeyq3VMDnRZkIRphadULSuHh2ePNZcavgr-Iy3kCdv_9EMVdbktRjLbM3cZYmbB7JtrsarTzqaw"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_ATV",
+            "views": "320K plays",
+            "trackNumber": 7,
+            "duration": "4:49",
+            "duration_seconds": 289
+        },
+        {
+            "videoId": "tCzE9LX8cgc",
+            "title": "Blood Of The Elves",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpID0olWaukVnIr6XpXFhDkywcYo64Ri9aG4nKTc0a0v84tmtmlwOQ3ZhujZp3lr9F-Kr5xjx0zLziC2t8_xgQH8u-jI-A"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_OMV",
+            "views": "1.6M plays",
+            "trackNumber": 8,
+            "duration": "4:38",
+            "duration_seconds": 278
+        },
+        {
+            "videoId": "bRW4gs4Co-o",
+            "title": "Destiny",
+            "artists": [
+                {
+                    "name": "Blind Guardian",
+                    "id": "UCevshEcA1yKVc0uucxo4dfg"
+                }
+            ],
+            "album": "The God Machine",
+            "likeStatus": "INDIFFERENT",
+            "inLibrary": false,
+            "pinnedToListenAgain": false,
+            "feedbackTokens": {
+                "add": null,
+                "remove": "AB9zfpIDBxwJiwif2EjwYyjnOBaCvO0hSiUyJTefrkzfWe0o2H6R1EOB46Z7PHXgb86XJZYj5VMIfOG_9RIghbZ56_KeJxU_UA"
+            },
+            "thumbnails": null,
+            "isAvailable": true,
+            "isExplicit": false,
+            "videoType": "MUSIC_VIDEO_TYPE_ATV",
+            "views": "277K plays",
+            "trackNumber": 9,
+            "duration": "6:47",
+            "duration_seconds": 407
+        }
+    ],
+    "related_recommendations": [
+        {
+            "title": "Demons & Wizards (Remasters 2019)",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCkck-JAINpgXbP__7MqEwog",
+                    "name": "Demons & Wizards"
+                }
+            ],
+            "browseId": "MPREb_2F4Q6Pecnyd",
+            "audioPlaylistId": "OLAK5uy_mF95Up9jLoRuqL5oCFt3toHYxhuK364c4",
+            "thumbnails": [
+                {
+                    "url": "https://lh3.googleusercontent.com/j2sjtabt7Fc3pN2DKEX0gknOmoWYUC4sFtFHyX7Ie97a299H9MuQ5EP-N1CPNcojYcNfEa_R7UhFCGDK=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://lh3.googleusercontent.com/j2sjtabt7Fc3pN2DKEX0gknOmoWYUC4sFtFHyX7Ie97a299H9MuQ5EP-N1CPNcojYcNfEa_R7UhFCGDK=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "A Semblance Of Normality",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCoksTWS2bCHvogG_uOF-bdQ",
+                    "name": "Skyclad"
+                }
+            ],
+            "browseId": "MPREb_mCqTdRv7gVl",
+            "audioPlaylistId": "OLAK5uy_muzM1aHlrwKd833kOVQOxTmZ4NkYGM-0k",
+            "thumbnails": [
+                {
+                    "url": "https://lh3.googleusercontent.com/L3YF9hGyw70dFvAj4SeVtcwcINp_b6IuOkZVhxtlexqbQ-RY7NlQ9uMta3CQqDFFd-TeUyr6d70eFoQ=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://lh3.googleusercontent.com/L3YF9hGyw70dFvAj4SeVtcwcINp_b6IuOkZVhxtlexqbQ-RY7NlQ9uMta3CQqDFFd-TeUyr6d70eFoQ=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "Defying the Rules",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCC0uuIX4jXJBdHuBXxWTl_Q",
+                    "name": "Hibria"
+                }
+            ],
+            "browseId": "MPREb_wJBchnRmCBz",
+            "audioPlaylistId": "OLAK5uy_leAUNiFlRTgu2cOqOnA-wCQ3lf091Xjes",
+            "thumbnails": [
+                {
+                    "url": "https://yt3.googleusercontent.com/99LYVUAtkdV1TaSQg3Qj1zbbh3iJPy4fA_kFLHsZPr0SrP00rqD5Ih81zms9gK3OYnYVbs4HV70hpHPZ=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://yt3.googleusercontent.com/99LYVUAtkdV1TaSQg3Qj1zbbh3iJPy4fA_kFLHsZPr0SrP00rqD5Ih81zms9gK3OYnYVbs4HV70hpHPZ=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "The Fourth Legacy",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCTAwYvdtEjXhMt0HR7d44Eg",
+                    "name": "Kamelot"
+                }
+            ],
+            "browseId": "MPREb_pywWkt1pPrF",
+            "audioPlaylistId": "OLAK5uy_n_TCGUjgc-KoQK4QtkdJ85mbVVDbDEOlk",
+            "thumbnails": [
+                {
+                    "url": "https://lh3.googleusercontent.com/xuqLt5w3g9zz_WmoU4xJaSSt65AeE31StvLYNSyc5KGnxV2zq3zMecVvvc9YK2ApJ-wTahBwdsl3Iwus=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://lh3.googleusercontent.com/xuqLt5w3g9zz_WmoU4xJaSSt65AeE31StvLYNSyc5KGnxV2zq3zMecVvvc9YK2ApJ-wTahBwdsl3Iwus=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "The Wake of Magellan (Bonus Track Edition)",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCeYrwpkUEEr68ZniXRHhm-g",
+                    "name": "Savatage"
+                }
+            ],
+            "browseId": "MPREb_SBGTAlovt0a",
+            "audioPlaylistId": "OLAK5uy_ndOgYye00kzWf5L1E5VtAsXF7CC2QBpB0",
+            "thumbnails": [
+                {
+                    "url": "https://lh3.googleusercontent.com/Spw5XS54ITWAFVDq6ET6U0aubUsQC0NbJyoL0XciMEbFq5nMqax9D0uDR0zv3ptb1pgGikSCgahe0JRl=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://lh3.googleusercontent.com/Spw5XS54ITWAFVDq6ET6U0aubUsQC0NbJyoL0XciMEbFq5nMqax9D0uDR0zv3ptb1pgGikSCgahe0JRl=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "Glory for Salvation",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCjjuWbTlk-8b_MaGqTBnlsQ",
+                    "name": "Rhapsody Of Fire"
+                }
+            ],
+            "browseId": "MPREb_2DQA0DV7Jew",
+            "audioPlaylistId": "OLAK5uy_mHmkY1OZVuQ7k-HgAZ30x3I23SNE-7GRo",
+            "thumbnails": [
+                {
+                    "url": "https://yt3.googleusercontent.com/zKDpblrQz3mFAvmxmIHgBwyUy1IntAY5zwK3ibEGGSCPnbMP1jAp9K3fsgZt4HS83vELjB7Nak6PxR9c=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://yt3.googleusercontent.com/zKDpblrQz3mFAvmxmIHgBwyUy1IntAY5zwK3ibEGGSCPnbMP1jAp9K3fsgZt4HS83vELjB7Nak6PxR9c=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": true
+        },
+        {
+            "title": "Masterplan",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCQm2l9VFAwCEMR2zydt9y6w",
+                    "name": "Masterplan"
+                }
+            ],
+            "browseId": "MPREb_HAlWJFgd4x7",
+            "audioPlaylistId": "OLAK5uy_k6qoAmMfNTfOzRyAd7_dJmAHXGS2dj8Fg",
+            "thumbnails": [
+                {
+                    "url": "https://yt3.googleusercontent.com/isCO2zDr3SJyqpQBkACQ19uun6zRUCzSN9w3zcytIGiLvI5d5w8JTiVAfKqWOqXRMiEfkbcfQy7-vMI=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://yt3.googleusercontent.com/isCO2zDr3SJyqpQBkACQ19uun6zRUCzSN9w3zcytIGiLvI5d5w8JTiVAfKqWOqXRMiEfkbcfQy7-vMI=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "Vale",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCZzrOhpSH_iXyc8bUzbzT-w",
+                    "name": "Orden Ogan"
+                }
+            ],
+            "browseId": "MPREb_zQ0BvDeq4sx",
+            "audioPlaylistId": "OLAK5uy_kIJZVJdFNw_V_rWq4dIzW3Q_fKNjAZKqg",
+            "thumbnails": [
+                {
+                    "url": "https://yt3.googleusercontent.com/9QoGHO4vb_EEMbCMxm4tarFIUopBqlOcuFr4g4w-fsDVNOasOV_OugEyCTfKx_CJPyNczJsXgtTeSxpCLw=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://yt3.googleusercontent.com/9QoGHO4vb_EEMbCMxm4tarFIUopBqlOcuFr4g4w-fsDVNOasOV_OugEyCTfKx_CJPyNczJsXgtTeSxpCLw=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "Epica",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCTAwYvdtEjXhMt0HR7d44Eg",
+                    "name": "Kamelot"
+                }
+            ],
+            "browseId": "MPREb_UfD7xH5lwUj",
+            "audioPlaylistId": "OLAK5uy_n7ge3q3AEALIqW3nRfvE1m44prHo-Xqd0",
+            "thumbnails": [
+                {
+                    "url": "https://lh3.googleusercontent.com/WymluX5iDyEJnKOLtx6Lf50yiwvlYLUf_3o4_XRlG7n8Mj66_Lk2pTsT5OXaH1Oe9ZBHx0rux5g1-laZ=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://lh3.googleusercontent.com/WymluX5iDyEJnKOLtx6Lf50yiwvlYLUf_3o4_XRlG7n8Mj66_Lk2pTsT5OXaH1Oe9ZBHx0rux5g1-laZ=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        },
+        {
+            "title": "A Night At The Opera",
+            "type": "Album",
+            "artists": [
+                {
+                    "id": "UCevshEcA1yKVc0uucxo4dfg",
+                    "name": "Blind Guardian"
+                }
+            ],
+            "browseId": "MPREb_ppvh6pdaiCc",
+            "audioPlaylistId": "OLAK5uy_nkyz8Kw10VZOtXbh5Owus0BOUOYQyS1AQ",
+            "thumbnails": [
+                {
+                    "url": "https://lh3.googleusercontent.com/y7swZfy6mJMIV_GyfCQ7wypHUyy_ITY_bQiGx5sxDEwoKyW_sQxhtGV7ncmfkoLpx6DcNG440qDMr7cx=w226-h226-l90-rj",
+                    "width": 226,
+                    "height": 226
+                },
+                {
+                    "url": "https://lh3.googleusercontent.com/y7swZfy6mJMIV_GyfCQ7wypHUyy_ITY_bQiGx5sxDEwoKyW_sQxhtGV7ncmfkoLpx6DcNG440qDMr7cx=w544-h544-l90-rj",
+                    "width": 544,
+                    "height": 544
+                }
+            ],
+            "isExplicit": false
+        }
+    ],
+    "duration_seconds": 3068
+}
