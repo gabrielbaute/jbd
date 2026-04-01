@@ -1,0 +1,19 @@
+[project]
+name = "jbd"
+version = "0.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mutagen>=1.47.0",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.13.1",
+    "requests>=2.33.1",
+    "yt-dlp>=2026.3.17",
+    "ytmusicapi>=1.11.5",
+]
+
+[dependency-groups]
+dev = [
+    "bumpver>=2025.1131",
+]
