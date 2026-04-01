@@ -1,12 +1,11 @@
 import re
-import logging
 import yt_dlp
+import logging
+from uuid import uuid4
 from pathlib import Path
-from uuid import UUID, uuid4
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Callable, Coroutine, Any
 
 from app.errors import StorageError
-
 from app.settings import AppSettings
 from app.enums import Format, Bitrate
 from app.services.lrclib_service import LyricService
@@ -14,11 +13,12 @@ from app.services.tag_service import AudioTaggerService
 from app.services.cover_service import CoverDownloaderService
 from app.schemas import AlbumTrackResponse, AlbumResponse, AudioFile, AudioFilesList
 
+ProgressCallback = Callable[[Dict[str, Any]], Coroutine[Any, Any, None]]
+
 class DownloaderService:
     """
     Clase para gestionar la descarga de listas de audio desde YouTube.
     """
-
     def __init__(self, settings: AppSettings, album_data: AlbumResponse):
         """Inicializa el descargador con la ruta de salida.
 
@@ -35,6 +35,26 @@ class DownloaderService:
         self.tag_service: AudioTaggerService = AudioTaggerService()
         self.lyrics_service: LyricService = LyricService(settings)
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.progress_callback: Optional[ProgressCallback] = None
+    
+    async def _emit_progress(self, current: int, total: int, status: str, track_title: str = ""):
+        """
+        Envía una actualización de progreso si hay un callback configurado.
+
+        Args:
+            current(int): Evento actual
+            total (int): Total de eventos
+            status (str): Estado actual
+            track_title (str, optional): Título de la canción actual. Por defecto es "".
+        """
+        if self.progress_callback:
+            await self.progress_callback({
+                "current": current,
+                "total": total,
+                "percentage": round((current / total) * 100, 2),
+                "status": status,
+                "track": track_title
+            })
 
     def _sanitize_filename(self, filename: str) -> str:
         """
@@ -295,3 +315,50 @@ class DownloaderService:
             total_size=sum([track.file_size for track in tracks]),
             audio_files=tracks
         )   
+    
+    async def download_album(
+        self, 
+        format_ext: Format = Format.MP3,
+        bitrate: Bitrate = Bitrate.B_128K,
+        genre: Optional[str] = None,
+        progress_cb: Optional[ProgressCallback] = None
+    ) -> AudioFilesList:
+        """
+        Método unificado para descargar álbumes con soporte de progreso.
+        """
+        self.progress_callback = progress_cb
+        tracks: List[AudioFile] = []
+        total_tracks = len(self.album_data.tracks)
+
+        # 1. Cover
+        await self._emit_progress(0, total_tracks, "Descargando portada...", "Metadata")
+        cover = self.cover_service.download_image(self.album_data.thumbnail, self.album_path / "cover.jpg")
+        cover_data = cover.read_bytes() if cover else None
+
+        # 2. Bucle de Tracks
+        for index, track in enumerate(self.album_data.tracks, 1):
+            await self._emit_progress(index - 1, total_tracks, f"Procesando...", track.title)
+            
+            audio_file = self._download_track(track, format_ext=format_ext, bitrate=bitrate)
+            
+            if audio_file:
+                # Tagging (usando polimorfismo o un if simple según el formato)
+                if format_ext == Format.MP3:
+                    self.tag_service.set_mp3_tags(audio_file, track, genre, cover_data)
+                else:
+                    self.tag_service.set_m4a_tags(audio_file, track, cover_data, genre)
+                
+                # Letras
+                lyrics_path = self._download_lyrics(track, audio_file.file_path)
+                if lyrics_path:
+                    audio_file.lyric_path = lyrics_path
+                
+                tracks.append(audio_file)
+        
+        await self._emit_progress(total_tracks, total_tracks, "Completado", "Finalizado")
+        
+        return AudioFilesList(
+            count=len(tracks),
+            total_size=sum([t.file_size for t in tracks]),
+            audio_files=tracks
+        )
