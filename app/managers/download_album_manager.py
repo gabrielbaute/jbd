@@ -1,14 +1,10 @@
-import re
 import logging
-import yt_dlp
-from pathlib import Path
-from uuid import UUID, uuid4
-from typing import List, Optional, Dict
+from typing import  Optional
 
 from app.settings import AppSettings
 from app.enums import Format, Bitrate
-from app.schemas import AlbumTrackResponse, AlbumResponse, AudioFile, AudioFilesList
-from app.services import AudioTaggerService, YouTubeService, CoverDownloaderService, ParserService, DownloaderService
+from app.schemas import AlbumResponse, AudioFilesList
+from app.services import YouTubeService, ParserService, DownloaderService
 
 class DownloadManager:
     """
@@ -23,8 +19,6 @@ class DownloadManager:
         """
         self.settings: AppSettings = settings
         self.youtube_service: YouTubeService = YouTubeService()
-        self.tag_service: AudioTaggerService = AudioTaggerService()
-        self.cover_service: CoverDownloaderService = CoverDownloaderService(settings)
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def download_album(
