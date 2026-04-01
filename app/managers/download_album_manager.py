@@ -27,14 +27,21 @@ class DownloadManager:
         self.cover_service: CoverDownloaderService = CoverDownloaderService(settings)
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def download_album(self, album_playlist_url: str, genre: Optional[str] = None, bitrate: Optional[Bitrate] = Bitrate.B_128K) -> AudioFilesList:
+    def download_album(
+            self, 
+            album_playlist_url: str, 
+            genre: Optional[str] = None, 
+            bitrate: Optional[Bitrate] = Bitrate.B_128K,
+            format: Optional[Format] = Format.MP3
+        ) -> AudioFilesList:
         """
         Orquesta la descarga de un album a partir de su link de youtube. El link debe ser tipo playlist.
 
         Args:
             album_playlist_url (str): URL de la playlist del album
-            genre (Optional[str]): Género musical del disco
-            bitrate (Optional[Bitrate]): Bitrate de salida de los archivos
+            genre (Optional[str]): Género musical del album.
+            bitrate (Optional[Bitrate]): Bitrate de salida de los archivos de audio.
+            format (Optional[Format]): Formato de salida de los archivos de audio. Por defecto Mp3.
         
         Returns:
             AudioFilesList: lista y metadata de los archivos generados.
@@ -44,9 +51,16 @@ class DownloadManager:
 
         download_service = DownloaderService(settings=self.settings, album_data=album_data)
         
-        downloads: AudioFilesList = download_service.download_album_to_mp3(
-            genre=genre,
-            bitrate=bitrate
-        )
+        if format == Format.MP3:
+            downloads: AudioFilesList = download_service.download_album_to_mp3(
+                genre=genre,
+                bitrate=bitrate
+            )
         
+        if format == Format.M4A:
+            downloads: AudioFilesList = download_service.download_album_to_m4a(
+                genre=genre,
+                bitrate=bitrate
+            )
+
         return downloads
