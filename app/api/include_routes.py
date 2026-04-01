@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.api.routes.analyze_routes import router as analyze_router
 from app.api.routes.download_routes import router as download_router
+from app.api.routes.settings_routes import router as settings_router
 from app.api.routes.health_routes import router as health_router
 
 def include_routes(app: FastAPI, prefix: str) -> None:
@@ -17,4 +18,5 @@ def include_routes(app: FastAPI, prefix: str) -> None:
     """
     app.include_router(analyze_router, prefix=prefix)
     app.include_router(download_router, prefix=prefix)
+    app.include_router(settings_router, prefix=prefix)
     app.include_router(health_router, prefix=prefix)

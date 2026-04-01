@@ -40,6 +40,6 @@ def create_app(settings: AppSettings) -> FastAPI:
     include_routes(app, prefix="/api/v1")
 
     # Cliente web
-    #setup_web_client(app, settings)
+    setup_web_client(app, settings)
 
     return app
