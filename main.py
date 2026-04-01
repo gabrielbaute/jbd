@@ -1,18 +1,34 @@
-from app.enums import Bitrate, Format
-from app.settings import settings, JBDLogger
-from app.managers.download_album_manager import DownloadManager
+""" 
+Entrypoint de la API
+"""
+import uvicorn
 
+from app.api.app_factory import create_app
+from app.api.error_handler import register_error_handlers
+
+from app.settings.load_settings import settings
+from app.settings.app_logs import JBDLogger
+
+# Configuración de logger
 JBDLogger.setup_logging(level="INFO")
 
-album_playlist_url = "https://music.youtube.com/playlist?list=OLAK5uy_lczVlLnN4R5X3qPrR8qodFYGIdnJ1w354&si=1V9_qweQAz1lIEpa"
+# Creación de la aplicación
+app = create_app(settings=settings)
 
-manager = DownloadManager(settings=settings)
+# Handler de errores
+register_error_handlers(app)
 
-downloads = manager.download_album(
-    album_playlist_url=album_playlist_url,
-    genre="Power Metal",
-    bitrate=Bitrate.B_128K,
-    format=Format.M4A
-)
+def run_server():
+    """
+    Lanza el servidor de uvicorn
+    """
+    uvicorn.run(
+        app=app,
+        host=settings.API_HOST,
+        port=settings.API_PORT,
+        log_level=settings.API_LOG_LEVEL,
+        reload=settings.API_RELOAD,
+    )
 
-print(downloads.model_dump_json(indent=4))
+if __name__ == "__main__":
+    run_server()
