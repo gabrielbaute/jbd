@@ -85,6 +85,8 @@ class AudioTaggerService:
         Args:
             audio_file (AudioFile): Archivo de audio al que se le asignarán las etiquetas.
             tags (AlbumTrackResponse): Etiquetas a asignar.
+            genre (str, optional): Género musical. Por defecto es None.
+            cover_data (Optional[bytes], optional): Datos de la portada del álbum. Por defecto es None.
 
         Returns:
             bool: True si las etiquetas se asignaron correctamente, False en caso contrario.
@@ -94,18 +96,25 @@ class AudioTaggerService:
             return False
         
         try:
-            m4a_file = MP4Tags(audio_file.file_path)
-            m4a_file["\xa9nam"] = tags.title
-            m4a_file["\xa9ART"] = tags.artists[0]
-            m4a_file["\xa9alb"] = tags.album
-            m4a_file["trkn"] = [(tags.track_number, 0)]
-            m4a_file["\xa9day"] = str(tags.publish_date.year)
-            
+            audio = MP4Tags(audio_file.file_path)
+            audio["\xa9nam"] = tags.title
+            audio["\xa9ART"] = tags.artists[0]
+            audio["\xa9alb"] = tags.album
+            audio["\xa9day"] = str(tags.publish_date.year)
+            audio["trkn"] = [tags.track_number, tags.total_tracks]
+
             if genre:
-                m4a_file["\xa9gen"] = genre
-            
-            m4a_file.save()
-            
+                audio["\xa9gen"] = genre
+
+            if cover_data:
+                audio["covr"] = [
+                    APIC(
+                        encoding=3,
+                        mime="image/jpeg",
+                        type=3,
+                        data=cover_data
+                    )
+                ]
             return True
         
         except Exception as e:

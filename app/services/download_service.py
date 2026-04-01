@@ -206,7 +206,7 @@ class DownloaderService:
             genre: Optional[str] = None
         ) -> AudioFilesList:
         """
-        Descarga una lista de pistas de audio desde YouTube.
+        Descarga una lista de pistas de audio desde YouTube en formato mp3.
 
         Args:
             bitrate (Bitrate, optional): Calidad de audio deseada.
@@ -227,7 +227,12 @@ class DownloaderService:
             audio_file = self._download_track(track, format_ext=Format.MP3, bitrate=bitrate)
             
             if audio_file:
-                self.tag_service.set_mp3_tags(audio_file, track, cover_data=cover_data, genre=genre)
+                self.tag_service.set_mp3_tags(
+                    audio_file=audio_file, 
+                    track=track, 
+                    genre=genre,
+                    cover_data=cover_data, 
+                )
                 
                 # 3. Obtenemos el archivo de letras.
                 lyrics_path = self._download_lyrics(track, audio_file.file_path)
@@ -242,3 +247,51 @@ class DownloaderService:
             total_size=sum([track.file_size for track in tracks]),
             audio_files=tracks
         )
+    
+    def download_album_to_m4a(
+            self, 
+            bitrate: Bitrate = Bitrate.B_128K,
+            genre: Optional[str] = None
+        ) -> AudioFilesList:
+        """
+        Descarga una lista de pistas de audio desde YouTube y las guarda en formato m4a.
+
+        Args:
+            bitrate (Bitrate, optional): Calidad de audio deseada.
+            genre (str, optional): Género musical.
+        
+        Returns:
+            AudioFilesList: Lista de objetos AudioFile con la información de los archivos descargados.
+        """
+        tracks: List[AudioFile] = []
+
+        # 1. Descargar el cover
+        cover = self.cover_service.download_image(self.album_data.thumbnail, self.album_path / "cover.jpg")
+        if cover:
+            cover_data = cover.read_bytes()
+        
+        # 2. Descargar las pistas
+        for track in self.album_data.tracks:
+            audio_file = self._download_track(track, format_ext=Format.M4A, bitrate=bitrate)
+            
+            if audio_file:
+                self.tag_service.set_m4a_tags(
+                    audio_file=audio_file, 
+                    tags=track, 
+                    cover_data=cover_data, 
+                    genre=genre
+                )
+                
+                # 3. Obtenemos el archivo de letras.
+                lyrics_path = self._download_lyrics(track, audio_file.file_path)
+                
+                if lyrics_path:
+                    audio_file.lyric_path = lyrics_path
+                
+                tracks.append(audio_file)
+        
+        return AudioFilesList(
+            count=len(tracks),
+            total_size=sum([track.file_size for track in tracks]),
+            audio_files=tracks
+        )   
