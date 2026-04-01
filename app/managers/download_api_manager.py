@@ -80,7 +80,7 @@ class DownloadManagerAPI:
             await self._broadcast_progress(job_id, data)
 
         try:
-            await service.download_album(
+            await service.async_download_album(
                 format_ext=format_ext,
                 bitrate=bitrate,
                 genre=genre,
