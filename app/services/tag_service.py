@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 from mutagen.id3 import  ID3, APIC, TIT2, TPE1, TPE2, TALB, TDRC, TRCK, TPOS, TCON
 from mutagen.mp3 import MP3
-from mutagen.mp4 import MP4Tags
+from mutagen.mp4 import MP4Tags, MP4
 from mutagen.easyid3 import EasyID3
 
 from app.enums import Format
@@ -96,7 +96,8 @@ class AudioTaggerService:
             return False
         
         try:
-            audio = MP4Tags(audio_file.file_path)
+            file = MP4(audio_file.file_path)
+            audio = MP4Tags(file)
             audio["\xa9nam"] = tags.title
             audio["\xa9ART"] = tags.artists[0]
             audio["\xa9alb"] = tags.album
@@ -115,6 +116,8 @@ class AudioTaggerService:
                         data=cover_data
                     )
                 ]
+
+            audio.save()
             return True
         
         except Exception as e:
