@@ -1,6 +1,6 @@
 from uuid import UUID
-from typing import List
 from pathlib import Path
+from typing import List, Optional
 from pydantic import BaseModel, Field
 
 from app.enums import Format
@@ -16,9 +16,11 @@ class AudioFile(BaseModel):
         file_format (Format): Format of the audio file.
         file_size (int): Size of the audio file in bytes.
     """
+    id: UUID = Field(..., description="ID of the audio file")
     file_path: Path = Field(..., description="Path to the audio file")
     file_name: str = Field(..., description="Name of the audio file")
     file_format: Format = Field(..., description="Format of the audio file")
+    lyric_path: Optional[Path] = Field(None, description="Path to the lyrics file if available.")
     file_size: int = Field(..., description="Size of the audio file in bytes")
 
 class AudioFilesList(BaseModel):
