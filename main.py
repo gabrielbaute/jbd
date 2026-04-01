@@ -1,14 +1,12 @@
 from app.enums import Bitrate
 from app.settings import settings, JBDLogger
-from app.services import DownloaderService, YouTubeService, ParserService
+from app.schemas.audio_file_schema import AudioFilesList
+from app.managers.download_album_manager import DownloadManager
 
 JBDLogger.setup_logging(level="INFO")
 
-album_playlist_url = "https://music.youtube.com/playlist?list=OLAK5uy_l8bkEhA0QRW2fu8D-XnXMte9vqxqveMQg&si=u-L2boIsdW5DkWP6"
+album_playlist_url = "https://music.youtube.com/playlist?list=OLAK5uy_mL1LRwDXByMjQJN0XNL0HnLS5bZBYFl2o&si=1dYtoxasOwBR2m2-"
 
-youtube_service = YouTubeService()
-album_id = ParserService.extract_playlist_id(album_playlist_url)
-
-album_info = youtube_service.get_tracklist_from_album_playlist_id(album_id)
-downloader_service = DownloaderService(settings, album_info)
-downloader_service.download_album_to_mp3(bitrate=Bitrate.B_128K, genre="Power Metal")
+manager = DownloadManager(settings=settings)
+downloads = manager.download_album(album_playlist_url=album_playlist_url, genre="Power Metal", bitrate=Bitrate.B_128K)
+print(downloads.model_dump_json(indent=4))
