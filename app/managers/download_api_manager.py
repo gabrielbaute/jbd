@@ -8,7 +8,7 @@ from fastapi import WebSocket
 
 from app.settings.app_settings import AppSettings
 from app.enums import Format, Bitrate
-from app.schemas import AlbumResponse
+from app.schemas import AlbumResponse, AudioFilesList
 from app.services.download_service import DownloaderService
 
 class DownloadManagerAPI:
@@ -25,6 +25,7 @@ class DownloadManagerAPI:
         """
         self.settings = settings
         self.active_connections: Dict[UUID, WebSocket] = {}
+        self.results: Dict[UUID, AudioFilesList] = {}
         self.logger = logging.getLogger(self.__class__.__name__)
 
     async def register_connection(self, job_id: UUID, websocket: WebSocket) -> None:
@@ -62,7 +63,7 @@ class DownloadManagerAPI:
         format_ext: Format,
         bitrate: Bitrate,
         genre: Optional[str] = None
-    ) -> None:
+    ) -> Optional[AudioFilesList]:
         """
         Ejecuta la descarga e informa el progreso de forma estricta.
 
@@ -72,6 +73,9 @@ class DownloadManagerAPI:
             format_ext (Format): Formato de audio.
             bitrate (Bitrate): Calidad del audio.
             genre (Optional[str]): Género para tags.
+        
+        Returns:
+            Optional[AudioFilesList]: Objeto de lista de AdioFiles, con las ubicaciones y pesos de los archivos de audio.
         """
         service = DownloaderService(self.settings, album_data)
 
@@ -80,24 +84,34 @@ class DownloadManagerAPI:
             await self._broadcast_progress(job_id, data)
 
         try:
-            await service.async_download_album(
+            # 1. Ejecutamos y capturamos el retorno del servicio
+            audio_files_result = await service.async_download_album(
                 format_ext=format_ext,
                 bitrate=bitrate,
                 genre=genre,
                 progress_cb=progress_callback
             )
+
+            # 2. Guardamos el resultado en el "store" del manager antes de cerrar
+            self.results[job_id] = audio_files_result
             
+            # 3. Informamos éxito incluyendo el peso total si quieres en el mensaje
             await self._broadcast_progress(job_id, {
                 "status": "completed",
-                "message": "Proceso finalizado con éxito."
+                "message": f"Proceso finalizado. Total: {audio_files_result.count} tracks.",
+                "total_size": audio_files_result.total_size # Dato extra para la UI
             })
             
+            return audio_files_result
+        
         except Exception as e:
             self.logger.error(f"Fallo crítico en job {job_id}: {e}", exc_info=True)
             await self._broadcast_progress(job_id, {
                 "status": "error",
                 "message": str(e)
             })
+            return None
+        
         finally:
             # Limpieza opcional de la conexión tras finalizar
             if job_id in self.active_connections:
