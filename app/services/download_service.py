@@ -420,9 +420,9 @@ class DownloaderService:
                     await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas ID3...", track.title)
                     tag_func = partial(self.tag_service.set_mp3_tags, audio_file, track, genre, cover_data)
                     await asyncio.sleep(0.01)
-                else:
+                if format_ext == Format.M4A:
                     await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas MP4...", track.title)
-                    tag_func = partial(self.tag_service.set_m4a_tags, audio_file, track, cover_data, genre)
+                    tag_func = partial(self.tag_service.set_m4a_tags, audio_file, track, genre, cover_data)
                     await asyncio.sleep(0.01)
                 
                 await loop.run_in_executor(None, tag_func)
