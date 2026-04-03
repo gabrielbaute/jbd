@@ -353,12 +353,17 @@ class DownloaderService:
             audio_file = self._download_track(track, format_ext=format_ext, bitrate=bitrate)
             
             if audio_file:
-                # Tagging (usando polimorfismo o un if simple según el formato)
                 if format_ext == Format.MP3:
                     self.tag_service.set_mp3_tags(audio_file, track, genre, cover_data)
-                else:
-                    self.tag_service.set_m4a_tags(audio_file, track, cover_data, genre)
-                
+                if format_ext == Format.M4A:
+                    self.tag_service.set_m4a_tags(audio_file, track, genre, cover_data)
+                if format_ext == Format.OPUS:
+                    self.tag_service.set_opus_tags(audio_file, track, genre, cover_data)
+                if format_ext == Format.OGG:
+                    self.tag_service.set_ogg_tags(audio_file, track, genre, cover_data)
+                if format_ext == Format.AAC:
+                    self.tag_service.set_aac_tags(audio_file, track, genre, cover_data)                
+
                 # Letras
                 lyrics_path = self._download_lyrics(track, audio_file.file_path)
                 if lyrics_path:
@@ -420,11 +425,27 @@ class DownloaderService:
                     await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas ID3...", track.title)
                     tag_func = partial(self.tag_service.set_mp3_tags, audio_file, track, genre, cover_data)
                     await asyncio.sleep(0.01)
+                
                 if format_ext == Format.M4A:
                     await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas MP4...", track.title)
                     tag_func = partial(self.tag_service.set_m4a_tags, audio_file, track, genre, cover_data)
                     await asyncio.sleep(0.01)
                 
+                if format_ext == Format.AAC:
+                    await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas AAC...", track.title)
+                    tag_func = partial(self.tag_service.set_aac_tags, audio_file, track, genre, cover_data)
+                    await asyncio.sleep(0.01)
+
+                if format_ext == Format.OGG:
+                    await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas Ogg...", track.title)
+                    tag_func = partial(self.tag_service.set_ogg_tags, audio_file, track, genre, cover_data)
+                    await asyncio.sleep(0.01)
+
+                if format_ext == Format.OPUS:
+                    await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas Opus...", track.title)
+                    tag_func = partial(self.tag_service.set_opus_tags, audio_file, track, genre, cover_data)
+                    await asyncio.sleep(0.01)
+
                 await loop.run_in_executor(None, tag_func)
                 
                 # Letras (I/O bloqueante)
