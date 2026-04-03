@@ -1,7 +1,7 @@
 [project]
 name = "jbd"
 version = "0.0.0"
-description = "Add your description here"
+description = "Servicio de descargas de YoutubeMusic"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
