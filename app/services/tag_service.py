@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 from mutagen.id3 import  ID3, APIC, TIT2, TPE1, TPE2, TALB, TDRC, TRCK, TPOS, TCON
 from mutagen.mp3 import MP3
-from mutagen.mp4 import MP4Tags, MP4
+from mutagen.mp4 import MP4Tags, MP4, MP4Cover
 from mutagen.easyid3 import EasyID3
 
 from app.enums import Format
@@ -96,26 +96,26 @@ class AudioTaggerService:
             return False
         
         try:
-            file = MP4(audio_file.file_path)
-            audio = MP4Tags(file)
-            audio["\xa9nam"] = tags.title
-            audio["\xa9ART"] = tags.artists[0]
-            audio["\xa9alb"] = tags.album
-            audio["\xa9day"] = str(tags.publish_date.year)
-            audio["trkn"] = [tags.track_number, tags.total_tracks]
+            audio = MP4(audio_file.file_path)
+            if not audio:
+                self.logger.error("No se pudo cargar el archivo de audio.")
+    
+            audio.update({
+                '\xa9nam': [tags.title],
+                '\xa9ART': ['/'.join(tags.artists)],
+                'aART': ['/'.join(tags.artists)],
+                '\xa9alb': [tags.album],
+                '\xa9day': [str(tags.publish_date.year)],
+                'trkn': [(tags.track_number, tags.total_tracks)]
+            })
 
             if genre:
+                self.logger.debug(f"Agregando {genre} a {tags.title}")
                 audio["\xa9gen"] = genre
 
             if cover_data:
-                audio["covr"] = [
-                    APIC(
-                        encoding=3,
-                        mime="image/jpeg",
-                        type=3,
-                        data=cover_data
-                    )
-                ]
+                self.logger.debug(f"Incorporando el cover art en JPEG a {tags.title}")
+                audio['covr'] = [MP4Cover(cover_data)]
 
             audio.save()
             return True
