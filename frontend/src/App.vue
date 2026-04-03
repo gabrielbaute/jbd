@@ -1,12 +1,11 @@
 <template>
   <main class="container mx-auto max-w-5xl px-4 py-12 min-h-screen flex flex-col relative">
     
-    <!-- Botón de Acceso a Configuración (Singleton Settings) -->
+    <!-- Singleton: Botón de Configuración -->
     <div class="fixed top-6 right-6 z-40">
       <button 
         @click="settingsModalRef?.open()"
         class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl text-slate-500 hover:text-neon-green hover:border-neon-green/50 transition-all backdrop-blur-md group shadow-2xl"
-        title="Configuración del Sistema"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-90 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -15,48 +14,27 @@
       </button>
     </div>
 
-    <!-- Sección: Cabecera Dinámica -->
-    <header :class="[
-      'transition-all duration-1000 ease-in-out flex flex-col items-center',
-      step === 'idle' ? 'mt-[20vh]' : 'mt-0 mb-12'
-    ]">
-      <h1 class="text-6xl font-black mb-2 bg-gradient-to-r from-neon-green to-cyber-blue bg-clip-text text-transparent italic tracking-tighter">
-        JBD_
-      </h1>
-      <p class="text-slate-500 font-mono text-sm mb-8 uppercase tracking-[0.3em]">Youtube Music Archiver v0.1</p>
+    <!-- Handler de Búsqueda -->
+    <SearchHandler 
+      :loading="step === 'analyzing'" 
+      :is-idle="step === 'idle'" 
+      @analyze="handleAnalyze" 
+    />
 
-      <!-- Input de URL con Blur y efectos Neon -->
-      <div class="w-full max-w-2xl relative group">
-        <input 
-          v-model="url"
-          @keyup.enter="handleAnalyze"
-          placeholder="Pega el link del álbum aquí..."
-          class="w-full bg-slate-900/50 border-2 border-slate-800 p-5 rounded-2xl text-white outline-none focus:border-neon-green transition-all backdrop-blur-sm shadow-2xl"
-          :disabled="step === 'analyzing' || step === 'downloading'"
-        />
-        <button 
-          @click="handleAnalyze"
-          class="absolute right-3 top-3 bottom-3 px-6 rounded-xl bg-neon-green text-black font-bold hover:scale-105 active:scale-95 transition-all disabled:opacity-50 shadow-[0_0_15px_rgba(74,222,128,0.3)]"
-        >
-          ANALYZE
-        </button>
-      </div>
-    </header>
-
-    <!-- Sección: Estado de Carga / Análisis -->
+    <!-- Cargando Análisis -->
     <section v-if="step === 'analyzing'" class="flex-1 flex items-center justify-center">
       <div class="flex flex-col items-center">
         <div class="w-16 h-16 border-4 border-t-neon-green border-slate-800 rounded-full animate-spin"></div>
-        <p class="mt-4 font-mono text-neon-green animate-pulse tracking-widest uppercase text-xs">Decrypting Metadata...</p>
+        <p class="mt-4 font-mono text-neon-green animate-pulse uppercase tracking-widest text-xs">Decrypting Metadata...</p>
       </div>
     </section>
 
-    <!-- Sección: Selección de Tracks y Ajustes -->
+    <!-- Resultados y Configuración -->
     <section v-if="step === 'selected' && albumData" class="space-y-8 animate-[fadeIn_0.5s_ease-out]">
       <AlbumCard :album="albumData" />
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Listado de pistas seleccionables -->
+        <!-- Lista de Selección -->
         <div class="lg:col-span-2 glass-card rounded-2xl p-2 h-[500px] overflow-y-auto custom-scrollbar">
           <TrackItem 
             v-for="track in albumData.tracks" 
@@ -67,41 +45,25 @@
           />
         </div>
 
-        <!-- Panel de Configuración lateral -->
-        <div class="flex flex-col gap-6">
-          <div class="glass-card border-neon-orange/30 border p-6 rounded-2xl space-y-6 bg-slate-900/40">
-            <h3 class="text-white font-bold uppercase tracking-widest text-[10px] border-b border-white/5 pb-2 opacity-60">
-              Configuración de Salida
-            </h3>
-            
-            <CustomSelect 
-              label="Formato de Audio"
-              v-model="selectedFormat"
-              :options="['mp3', 'wav', 'flac', 'ogg', 'opus', 'aac', 'm4a']"
-            />
-
-            <CustomSelect 
-              label="Calidad (Bitrate)"
-              v-model="selectedBitrate"
-              :options="['128k', '192k', '256k', '320k']"
-            />
-
-            <button 
-              @click="handleDownload"
-              class="w-full py-4 rounded-xl bg-neon-orange text-white font-black shadow-[0_0_20px_rgba(255,103,0,0.2)] hover:scale-[1.02] active:scale-95 transition-all"
-            >
-              PROCESS & ARCHIVE
-            </button>
-          </div>
-        </div>
+        <!-- Panel lateral: Configuración de Descarga -->
+        <SettingsDownload 
+          :format="selectedFormat"
+          @update:format="selectedFormat = $event"
+          :bitrate="selectedBitrate"
+          @update:bitrate="selectedBitrate = $event"
+          :genre="selectedGenre"
+          @update:genre="selectedGenre = $event"
+          :disabled="step === 'downloading'"
+          @download="onStartDownload"
+        />
       </div>
     </section>
 
-    <!-- Sección: Pantalla de Descarga y Archivado Activo -->
+    <!-- Panel de Progreso Activo -->
     <section v-if="step === 'downloading' && albumData" class="space-y-8 animate-slide-up">
         
-        <!-- Bloque: Progreso Global -->
-        <div class="glass-card p-6 rounded-2xl border-b-4 border-neon-green bg-slate-900/40">
+        <!-- Progreso Global -->
+        <div class="glass-card p-6 rounded-2xl border-b-4 border-neon-green bg-slate-900/40 shadow-2xl">
           <div class="flex justify-between items-end mb-4">
             <div>
               <h2 class="text-white font-black text-2xl uppercase italic tracking-tighter">Archivando Album...</h2>
@@ -120,7 +82,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <!-- Bloque: Lista en tiempo real de procesamiento -->
+          <!-- Monitor de Tracks en tiempo real -->
           <div class="lg:col-span-2 glass-card rounded-2xl p-4 h-[450px] overflow-y-auto custom-scrollbar bg-slate-900/40">
             <DownloadTrackItem 
               v-for="(track, index) in albumData.tracks" 
@@ -133,59 +95,48 @@
             />
           </div>
 
-          <!-- Bloque: Consola de Logs y Control Final -->
+          <!-- Consola y Controles finales -->
           <div class="flex flex-col gap-4">
             <LogViewer :lastMessage="progress.message" />
             
-            <button 
-              v-if="progress.status === 'completed'"
-              @click="step = 'idle'"
-              class="w-full py-4 rounded-xl bg-cyber-blue text-black font-black hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,243,255,0.2)]"
-            >
-              VOLVER AL INICIO
-            </button>
-            
-            <button 
-              v-if="progress.status === 'completed'"
-              @click="triggerZipDownload"
-              class="w-full py-4 rounded-xl bg-neon-green text-black font-black hover:scale-105 transition-all shadow-[0_0_20px_#4ade8044] animate-pulse"
-            >
-              DOWNLOAD ARCHIVE (.ZIP)
-            </button>
-            
-            <button 
-              v-if="progress.status === 'completed'"
-              @click="step = 'idle'"
-              class="w-full py-4 rounded-xl bg-slate-800 text-white font-black hover:bg-slate-700 transition-all border border-slate-700"
-            >
-              NEW ARCHIVE SESSION
-            </button>
+            <template v-if="progress.status === 'completed'">
+              <button 
+                @click="triggerZipDownload"
+                class="w-full py-4 rounded-xl bg-neon-green text-black font-black hover:scale-105 transition-all shadow-[0_0_20px_#4ade8044] animate-pulse"
+              >
+                DOWNLOAD ARCHIVE (.ZIP)
+              </button>
+              
+              <button 
+                @click="step = 'idle'"
+                class="w-full py-4 rounded-xl bg-slate-800 text-white font-black hover:bg-slate-700 transition-all border border-slate-700"
+              >
+                NEW ARCHIVE SESSION
+              </button>
+            </template>
           </div>
         </div>
     </section>
 
-    <!-- Modal de Configuración (Injectado via Teleport) -->
+    <!-- Modal Teleport -->
     <SettingsModal ref="settingsModalRef" />
 
   </main>
 </template>
 
 <style>
-/* Animaciones de transición Cyberpunk */
 @keyframes fadeIn { 
   from { opacity: 0; transform: translateY(20px); } 
   to { opacity: 1; transform: translateY(0); } 
 }
 .animate-slide-up { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
 
-/* Glassmorphism base */
 .glass-card {
   background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Scrollbar personalizada */
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(74, 222, 128, 0.2); border-radius: 10px; }
