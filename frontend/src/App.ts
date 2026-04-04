@@ -18,8 +18,8 @@ import SettingsModal from './components/settings/SettingsModal.vue';
 import type { components } from './api/schema';
 type AlbumResponse = components["schemas"]["AlbumResponse-Output"];
 
-/**
- * Definición de los estados posibles de la aplicación.
+/** 
+ * Estados posibles de la aplicación para el manejo de la UI.
  */
 export type AppStep = 'idle' | 'analyzing' | 'selected' | 'downloading' | 'completed';
 
@@ -30,6 +30,7 @@ export default defineComponent({
     LogViewer, DownloadTrackItem, SettingsModal
   },
   setup() {
+    // --- ESTADO ---
     const step = ref<AppStep>('idle');
     const albumData = ref<AlbumResponse | null>(null);
     const selectedTrackIds = ref<string[]>([]);
@@ -41,38 +42,17 @@ export default defineComponent({
       progress, executeDownload, triggerZipDownload 
     } = useDownloadManager();
 
-    // --- PROPIEDADES COMPUTADAS (Lógica de representación) ---
+    // --- PROPIEDADES COMPUTADAS ---
 
-    /**
-     * Indica si el sistema está analizando una URL.
-     */
     const isAnalyzing = computed((): boolean => step.value === 'analyzing');
-
-    /**
-     * Indica si la aplicación está en estado inicial.
-     */
     const isIdle = computed((): boolean => step.value === 'idle');
-
-    /**
-     * Indica si hay un proceso de descarga activo.
-     */
     const isDownloading = computed((): boolean => step.value === 'downloading');
-
-    /**
-     * Indica si el proceso ha finalizado con éxito.
-     */
     const isCompleted = computed((): boolean => step.value === 'completed');
-
-    /**
-     * Determina si se debe mostrar el panel de selección de tracks.
-     */
+    
     const showSelectionPanel = computed((): boolean => 
       step.value === 'selected' || step.value === 'downloading'
     );
-
-    /**
-     * Determina si se debe mostrar el panel de progreso y logs.
-     */
+    
     const showProgressPanel = computed((): boolean => 
       step.value === 'downloading' || step.value === 'completed'
     );
@@ -80,9 +60,9 @@ export default defineComponent({
     // --- MÉTODOS ---
 
     /**
-     * Maneja el análisis de la URL.
+     * Maneja el análisis de la URL del álbum y selecciona todos los tracks por defecto.
      * 
-     * @param {string} url - URL del álbum.
+     * @param {string} url - URL del álbum a analizar.
      * @returns {Promise<void>}
      */
     const handleAnalyze = async (url: string): Promise<void> => {
@@ -101,7 +81,7 @@ export default defineComponent({
     };
 
     /**
-     * Inicia la descarga en el backend.
+     * Inicia el proceso de descarga masiva.
      * 
      * @returns {Promise<void>}
      */
@@ -118,9 +98,18 @@ export default defineComponent({
     };
 
     /**
-     * Reinicia la sesión de la aplicación.
+     * Agrega o elimina un track de la lista de selección.
      * 
-     * @returns {void}
+     * @param {string} id - ID del track (video_id).
+     */
+    const toggleTrack = (id: string): void => {
+      const idx = selectedTrackIds.value.indexOf(id);
+      if (idx > -1) selectedTrackIds.value.splice(idx, 1);
+      else selectedTrackIds.value.push(id);
+    };
+
+    /**
+     * Reinicia el estado para permitir un nuevo análisis.
      */
     const resetSession = (): void => {
       step.value = 'idle';
@@ -128,40 +117,15 @@ export default defineComponent({
       selectedTrackIds.value = [];
     };
 
-    /**
-     * Gestiona la selección manual de tracks.
-     * 
-     * @param {string} id - ID del video/track.
-     * @returns {void}
-     */
-    const toggleTrack = (id: string): void => {
-      const index = selectedTrackIds.value.indexOf(id);
-      if (index > -1) selectedTrackIds.value.splice(index, 1);
-      else selectedTrackIds.value.push(id);
-    };
-
-    /**
-     * Verifica si una pista específica ha terminado de procesarse.
-     * 
-     * @param {number} index - Índice de la pista.
-     * @returns {boolean}
-     */
-    const isTrackCompleted = (index: number): boolean => {
-      if (isCompleted.value) return true;
-      if (!albumData.value || !progress.currentTrack) return false;
-      const currentIndex = albumData.value.tracks.findIndex(t => t.title === progress.currentTrack);
-      return index < currentIndex;
-    };
-
     return {
-      // Estado y banderas (computadas)
+      // Estado expuesto
       isAnalyzing, isIdle, isDownloading, isCompleted, 
       showSelectionPanel, showProgressPanel,
       albumData, selectedTrackIds, settingsModalRef,
       selectedFormat, selectedBitrate, selectedGenre, progress,
-      // Métodos
+      // Métodos expuestos
       handleAnalyze, onStartDownload, toggleTrack, 
-      isTrackCompleted, triggerZipDownload, resetSession
+      triggerZipDownload, resetSession
     };
   }
 });

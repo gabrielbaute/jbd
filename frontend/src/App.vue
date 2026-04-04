@@ -1,3 +1,5 @@
+<script lang="ts" src="./App.ts"></script>
+
 <template>
   <main class="container mx-auto max-w-5xl px-4 py-12 min-h-screen flex flex-col relative">
     
@@ -35,9 +37,8 @@
       <!-- Representación visual del Álbum -->
       <AlbumCard :album="albumData" />
 
-      <!-- Panel de Selección y Configuración (Sólo antes o durante descarga) -->
+      <!-- Panel de Selección y Configuración -->
       <div v-if="showSelectionPanel" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Lista de tracks para marcar/desmarcar -->
         <div class="lg:col-span-2 glass-card rounded-2xl p-2 h-[500px] overflow-y-auto custom-scrollbar">
           <TrackItem 
             v-for="track in albumData.tracks" 
@@ -48,7 +49,7 @@
           />
         </div>
 
-        <!-- Controles de formato y disparador de descarga -->
+        <!-- Corregido: Uso de :prop y @update para evitar error de v-model argument -->
         <SettingsDownload 
           :format="selectedFormat"
           @update:format="selectedFormat = $event"
@@ -61,9 +62,8 @@
         />
       </div>
 
-      <!-- Panel de Monitorización de Progreso (Downloading/Completed) -->
+      <!-- Panel de Monitorización de Progreso -->
       <div v-if="showProgressPanel" class="space-y-8 animate-slide-up">
-          <!-- Barra de progreso general -->
           <div class="glass-card p-6 rounded-2xl border-b-4 border-neon-green bg-slate-900/40 shadow-2xl">
             <div class="flex justify-between items-end mb-4">
               <div>
@@ -82,21 +82,17 @@
             </div>
           </div>
 
-          <!-- Detalles individuales y logs -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 glass-card rounded-2xl p-4 h-[450px] overflow-y-auto custom-scrollbar bg-slate-900/40">
               <DownloadTrackItem 
-                v-for="(track, index) in albumData.tracks" 
-                :key="track.video_id ?? index"
-                :title="track.title"
-                :track-number="track.track_number"
-                :is-active="progress.currentTrack === track.title"
-                :is-completed="isTrackCompleted(index)"
-                :current-status="progress.message"
+              v-for="(track, index) in albumData.tracks" 
+              :key="track.video_id ?? index"
+              :title="track.title"
+              :current-track-from-ws="progress.currentTrack" 
+              :is-global-completed="isCompleted"
               />
             </div>
 
-            <!-- Terminal de logs y botones de acción final -->
             <div class="flex flex-col gap-4">
               <LogViewer :lastMessage="progress.message" />
               
@@ -119,15 +115,13 @@
       </div>
     </section>
 
-    <!-- Modal de configuración global -->
     <SettingsModal ref="settingsModalRef" />
-
   </main>
 </template>
 
 <style>
-/* Estilos visuales omitidos por brevedad pero se mantienen iguales */
 .glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.1); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #4ade80; border-radius: 10px; }
 </style>
-
-<script lang="ts" src="./App.ts"></script>
