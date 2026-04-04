@@ -48,7 +48,7 @@ class AudioTaggerService:
                 TPE1(encoding=3, text=track.artists[0]),
                 TPE2(encoding=3, text=track.artists[0]),
                 TALB(encoding=3, text=track.album),
-                TDRC(encoding=3, text=str(track.publish_date.year)),
+                TDRC(encoding=3, text=str(track.year)),
                 TRCK(encoding=3, text=f"{track.track_number}/{track.total_tracks}")
             ]
 
@@ -108,7 +108,7 @@ class AudioTaggerService:
                 '\xa9ART': ['/'.join(tags.artists)],
                 'aART': ['/'.join(tags.artists)],
                 '\xa9alb': [tags.album],
-                '\xa9day': [str(tags.publish_date.year)],
+                '\xa9day': [str(tags.year)],
                 'trkn': [(tags.track_number, tags.total_tracks)]
             })
 
@@ -157,7 +157,7 @@ class AudioTaggerService:
             audio["title"] = track.title
             audio["artist"] = track.artists
             audio["album"] = track.album
-            audio["date"] = str(track.publish_date.year)
+            audio["date"] = str(track.year)
             audio["tracknumber"] = str(track.track_number)
             audio["totaltracks"] = str(track.total_tracks)
 
@@ -213,7 +213,7 @@ class AudioTaggerService:
             audio["title"] = track.title
             audio["artist"] = track.artists
             audio["album"] = track.album
-            audio["date"] = str(track.publish_date.year)
+            audio["date"] = str(track.year)
             audio["tracknumber"] = str(track.track_number)
 
             if genre:
@@ -268,7 +268,7 @@ class AudioTaggerService:
             audio["title"] = track.title
             audio["artist"] = track.artists[0]
             audio["album"] = track.album
-            audio["date"] = str(track.publish_date.year)
+            audio["date"] = str(track.year)
             audio["tracknumber"] = f"{track.track_number}/{track.total_tracks}"
 
             if genre:
