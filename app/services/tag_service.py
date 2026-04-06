@@ -45,8 +45,8 @@ class AudioTaggerService:
             audio = ID3(audio_file.file_path)
             frames = [
                 TIT2(encoding=3, text=track.title),
-                TPE1(encoding=3, text=track.artists[0]),
-                TPE2(encoding=3, text=track.artists[0]),
+                TPE1(encoding=3, text=track.artists),
+                TPE2(encoding=3, text=track.artists),
                 TALB(encoding=3, text=track.album),
                 TDRC(encoding=3, text=str(track.year)),
                 TRCK(encoding=3, text=f"{track.track_number}/{track.total_tracks}")
@@ -105,8 +105,8 @@ class AudioTaggerService:
     
             audio.update({
                 '\xa9nam': [tags.title],
-                '\xa9ART': ['/'.join(tags.artists)],
-                'aART': ['/'.join(tags.artists)],
+                '\xa9ART': tags.artists,
+                'aART': tags.artists,
                 '\xa9alb': [tags.album],
                 '\xa9day': [str(tags.year)],
                 'trkn': [(tags.track_number, tags.total_tracks)]
@@ -266,7 +266,7 @@ class AudioTaggerService:
                 audio = EasyID3(audio_file.file_path)
 
             audio["title"] = track.title
-            audio["artist"] = track.artists[0]
+            audio["artist"] = track.artists
             audio["album"] = track.album
             audio["date"] = str(track.year)
             audio["tracknumber"] = f"{track.track_number}/{track.total_tracks}"
