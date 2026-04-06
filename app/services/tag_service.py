@@ -46,7 +46,7 @@ class AudioTaggerService:
             frames = [
                 TIT2(encoding=3, text=track.title),
                 TPE1(encoding=3, text=track.artists),
-                TPE2(encoding=3, text=track.artists),
+                TPE2(encoding=3, text=str(track.artists[0])),
                 TALB(encoding=3, text=track.album),
                 TDRC(encoding=3, text=str(track.year)),
                 TRCK(encoding=3, text=f"{track.track_number}/{track.total_tracks}")
@@ -106,7 +106,7 @@ class AudioTaggerService:
             audio.update({
                 '\xa9nam': [tags.title],
                 '\xa9ART': tags.artists,
-                'aART': tags.artists,
+                'aART': [tags.artists[0]],
                 '\xa9alb': [tags.album],
                 '\xa9day': [str(tags.year)],
                 'trkn': [(tags.track_number, tags.total_tracks)]
