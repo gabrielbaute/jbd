@@ -171,7 +171,7 @@ class DownloaderService:
             AudioFile: Objeto AudioFile con la información del archivo descargado.
         """
         output_path = self._build_output_path(track=track_data, format_ext=format_ext)
-        self.logger.info(f"Descargando: {track_data.title} desde {track_data.url_canonical} a {output_path}")
+        self.logger.info(f"Descargando: {track_data.title} desde {track_data.url_canonical} a {output_path.name}")
        
         ydl_opts = self._configure_ydl_opts(output_path, format_ext, bitrate)
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

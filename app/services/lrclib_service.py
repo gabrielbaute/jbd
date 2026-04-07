@@ -54,7 +54,7 @@ class LyricService:
             )
 
             if response.status_code == 404:
-                self.logger.warning(f"Letra no encontrada para: {track.title}")
+                self.logger.warning(f"Letra {f"sincronizada" if synced else f"en plain-text"} no encontrada para: {track.title}")
                 return None
 
             response.raise_for_status()

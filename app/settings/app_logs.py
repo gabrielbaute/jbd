@@ -5,6 +5,20 @@ from logging.handlers import RotatingFileHandler
 
 from app.settings.load_settings import settings
 
+class FixedWidthFormatter(logging.Formatter):
+    """
+    Formateador que asegura un ancho fijo para el levelname,
+    similar al estilo de Uvicorn.
+    """
+    def __init__(self, fmt=None, datefmt=None, level_width=8):
+        super().__init__(fmt, datefmt)
+        self.level_width = level_width
+    
+    def format(self, record):
+        # Formateamos el levelname con ancho fijo y justificación izquierda
+        record.levelname = record.levelname.ljust(self.level_width)
+        return super().format(record)
+
 class JBDLogger:
     """
     Configuración del sistema de logs.
@@ -35,8 +49,8 @@ class JBDLogger:
         # Aseguramos que el directorio de logs existe
         settings.LOGS_PATH.mkdir(parents=True, exist_ok=True)
 
-        # Definimos el formato
-        log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        # Definimos el formato base
+        log_format = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
         
         # Handler de Rotación
         rotate_handler = RotatingFileHandler(
@@ -50,9 +64,24 @@ class JBDLogger:
         # Handler de Consola
         stream_handler = logging.StreamHandler()
 
-        logging.basicConfig(
-            level=JBDLogger.LEVEL_MAP.get(level, logging.INFO),
-            format=log_format,
+        # Creamos el formateador con ancho fijo (8 caracteres, como Uvicorn)
+        formatter = FixedWidthFormatter(
+            fmt=log_format,
             datefmt="%Y-%m-%d %H:%M:%S",
-            handlers=[rotate_handler, stream_handler]
+            level_width=8  # Ajusta este valor según necesites
         )
+        
+        # Aplicamos el formateador a ambos handlers
+        rotate_handler.setFormatter(formatter)
+        stream_handler.setFormatter(formatter)
+
+        # Configuramos el logger root
+        root_logger = logging.getLogger()
+        root_logger.setLevel(JBDLogger.LEVEL_MAP.get(level, logging.INFO))
+        
+        # Limpiamos handlers existentes para evitar duplicados
+        root_logger.handlers.clear()
+        
+        # Agregamos nuestros handlers
+        root_logger.addHandler(rotate_handler)
+        root_logger.addHandler(stream_handler)
