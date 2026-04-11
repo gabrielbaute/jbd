@@ -6,19 +6,6 @@ Es una excelente base para comenzar. Teniendo en cuenta que el proyecto ha evolu
 He refinado tu borrador para darle un toque más profesional, incluyendo una sección de **Arquitectura** (muy útil para tu perfil de ingeniero) y detallando el proceso de configuración que acabamos de implementar.
 
 ---
-
-```markdown
-# JBD (Just Better Downloader) 🚀
-
-Este proyecto viene como una alternativa a uno anterior que tenía: **SpotifySaver**. Ese aún sigue funcionando, solo que no tengo como pagar una cuenta premium para poder usarla. Con el paso del tiempo iré actualizando este README para tener las instrucciones de uso claras.
-
-## 🛠️ Arquitectura del Sistema
-
-El proyecto sigue una estructura desacoplada para facilitar el mantenimiento y la escalabilidad:
-
-*   **Backend:** Potenciado por Python (FastAPI/Flask) y gestionado con `uv`. Se encarga de la lógica de descarga, comunicación con `yt-dlp` y gestión de archivos.
-*   **Frontend:** Una SPA (Single Page Application) construida con **Vue 3**, **TypeScript** y **Tailwind CSS**, diseñada con una estética minimalista y funcional.
-
 ## 🚀 Instalación y Despliegue
 
 ### 1. Clonar el repositorio
