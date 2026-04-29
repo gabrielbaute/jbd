@@ -14,7 +14,7 @@ class YouTubeService:
         self.ytmusic = YTMusic()
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def get_song(self, video_id: str) -> Optional[SongResponse]:
+    def get_song(self, video_id: Optional[str]) -> Optional[SongResponse]:
         """
         Obtiene los detalles de una canción a partir de su ID de video.
 
@@ -24,6 +24,10 @@ class YouTubeService:
         Returns:
             Optional[SongResponse]: Los detalles de la canción o None en caso de error.
         """
+        if video_id == None:
+            self.logger.warning("Se recibió un ID de Video nulo")
+            return None
+        
         try:
             song = self.ytmusic.get_song(video_id)
             mc = song.get("microformat", {})
@@ -125,7 +129,7 @@ class YouTubeService:
 
             return track_response
         except Exception as e:
-            self.logger.error(f"Error al obtener la canción con ID {track_response.video_id}: {e}")
+            self.logger.error(f"Error al obtener la canción con ID {track.get("videoId")}: {e}")
             return None        
 
     def get_tracklist_from_album_playlist_id(self, playlist_id: str) -> Optional[AlbumResponse]:
