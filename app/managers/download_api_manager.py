@@ -52,8 +52,8 @@ class DownloadManagerAPI:
         if ws:
             try:
                 await ws.send_json(payload)
-            except Exception as e:
-                self.logger.error(f"Error enviando progreso al job {job_id}: {e}")
+            except Exception:
+                self.logger.exception(f"Error enviando progreso al job {job_id}")
                 del self.active_connections[job_id]
 
     async def download_album_job(
@@ -73,7 +73,7 @@ class DownloadManagerAPI:
             format_ext (Format): Formato de audio.
             bitrate (Bitrate): Calidad del audio.
             genre (Optional[str]): Género para tags.
-        
+
         Returns:
             Optional[AudioFilesList]: Objeto de lista de AdioFiles, con las ubicaciones y pesos de los archivos de audio.
         """
@@ -94,24 +94,24 @@ class DownloadManagerAPI:
 
             # 2. Guardamos el resultado en el "store" del manager antes de cerrar
             self.results[job_id] = audio_files_result
-            
+
             # 3. Informamos éxito incluyendo el peso total si quieres en el mensaje
             await self._broadcast_progress(job_id, {
                 "status": "completed",
                 "message": f"Proceso finalizado. Total: {audio_files_result.count} tracks.",
                 "total_size": audio_files_result.total_size # Dato extra para la UI
             })
-            
+
             return audio_files_result
-        
+
         except Exception as e:
-            self.logger.error(f"Fallo crítico en job {job_id}: {e}", exc_info=True)
+            self.logger.exception(f"Fallo crítico en job {job_id}")
             await self._broadcast_progress(job_id, {
                 "status": "error",
                 "message": str(e)
             })
             return None
-        
+
         finally:
             # Limpieza opcional de la conexión tras finalizar
             if job_id in self.active_connections:
