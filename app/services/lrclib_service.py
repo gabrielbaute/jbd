@@ -14,7 +14,7 @@ class LyricService:
     Attributes:
         BASE_URL (str): URL base de la API.
     """
-    
+
     BASE_URL: str = "https://lrclib.net/api"
 
     def __init__(self, settings: AppSettings):
@@ -35,7 +35,7 @@ class LyricService:
         Args:
             track (AlbumTrackResponse): Objeto track generado desde youtube.
             synced (bool): Si la letra debe ser sincronizada o no. Por defecto True.
-        
+
         Returns:
             Optional[str]: Contenido de la letra si se encuentra, None en caso contrario.
         """
@@ -65,18 +65,18 @@ class LyricService:
             return data.get(lyric_type)
 
         except requests.exceptions.RequestException as e:
-            self.logger.error(f"Error al conectar con la API de LRCLib: {str(e)}")
+            self.logger.exception("Error al conectar con la API de LRCLib.")
             raise APIError(
                 message="Error al conectar con la API de LRCLib.",
-                details=str(e),
+                details={"error": e},
             )
         except Exception as e:
-            self.logger.error(f"Error al obtener las letras: {str(e)}")
+            self.logger.exception("Error al obtener las letras-")
             raise APIError(
                 message="Error al obtener las letras.",
-                details=str(e),
+                details={"error": e},
             )
-            
+
 
     def get_lyrics_with_fallback(self, track: AlbumTrackResponse) -> Optional[str]:
         """
