@@ -19,9 +19,9 @@ class AudioTaggerService:
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def set_mp3_tags(
-            self, 
-            audio_file: AudioFile, 
-            track: AlbumTrackResponse, 
+            self,
+            audio_file: AudioFile,
+            track: AlbumTrackResponse,
             genre: Optional[str] = None,
             cover_data: Optional[bytes] = None
         ) -> bool:
@@ -40,7 +40,7 @@ class AudioTaggerService:
         if audio_file.file_format != Format.MP3:
             self.logger.error("El archivo no es un MP3.")
             return False
-        
+
         try:
             audio = ID3(audio_file.file_path)
             frames = [
@@ -70,16 +70,16 @@ class AudioTaggerService:
 
             audio.save(v2_version=3)
             return True
-        
+
         except Exception as e:
             self.logger.error(f"Error setting MP3 tags: {e}")
             return False
-    
+
     def set_m4a_tags(
-            self, 
-            audio_file: AudioFile, 
-            tags: AlbumTrackResponse, 
-            genre: Optional[str] = None, 
+            self,
+            audio_file: AudioFile,
+            tags: AlbumTrackResponse,
+            genre: Optional[str] = None,
             cover_data: Optional[bytes] = None
         ) -> bool:
         """
@@ -97,12 +97,12 @@ class AudioTaggerService:
         if audio_file.file_format != Format.M4A:
             self.logger.error("El archivo no es un M4A.")
             return False
-        
+
         try:
             audio = MP4(audio_file.file_path)
             if not audio:
                 self.logger.error("No se pudo cargar el archivo de audio.")
-    
+
             audio.update({
                 '\xa9nam': [tags.title],
                 '\xa9ART': tags.artists,
@@ -122,15 +122,15 @@ class AudioTaggerService:
 
             audio.save()
             return True
-        
-        except Exception as e:
-            self.logger.error(f"Error setting M4A tags: {e}")
+
+        except Exception:
+            self.logger.exception("Error setting M4A tags.")
             return False
 
     def set_ogg_tags(
-            self, 
-            audio_file: AudioFile, 
-            track: AlbumTrackResponse, 
+            self,
+            audio_file: AudioFile,
+            track: AlbumTrackResponse,
             genre: Optional[str] = None,
             cover_data: Optional[bytes] = None
         ) -> bool:
@@ -152,7 +152,7 @@ class AudioTaggerService:
 
         try:
             audio = OggVorbis(audio_file.file_path)
-            
+
             # Las etiquetas Vorbis son simples mapeos de texto
             audio["title"] = track.title
             audio["artist"] = track.artists
@@ -170,7 +170,7 @@ class AudioTaggerService:
                 picture.data = cover_data
                 picture.type = 3  # Front Cover
                 picture.mime = "image/jpeg"
-                
+
                 # Se codifica en base64 internamente mediante el campo metadata_block_picture
                 import base64
                 picture_data = picture.write()
@@ -179,14 +179,14 @@ class AudioTaggerService:
 
             audio.save()
             return True
-        except Exception as e:
-            self.logger.error(f"Error setting OGG tags: {e}")
+        except Exception:
+            self.logger.exception("Error setting OGG tags.")
             return False
 
     def set_opus_tags(
-            self, 
-            audio_file: AudioFile, 
-            track: AlbumTrackResponse, 
+            self,
+            audio_file: AudioFile,
+            track: AlbumTrackResponse,
             genre: Optional[str] = None,
             cover_data: Optional[bytes] = None
         ) -> bool:
@@ -209,7 +209,7 @@ class AudioTaggerService:
         try:
             # OggOpus hereda casi toda la lógica de Vorbis
             audio = OggOpus(audio_file.file_path)
-            
+
             audio["title"] = track.title
             audio["artist"] = track.artists
             audio["album"] = track.album
@@ -224,7 +224,7 @@ class AudioTaggerService:
                 picture.data = cover_data
                 picture.type = 3
                 picture.mime = "image/jpeg"
-                
+
                 picture_data = picture.write()
                 import base64
                 encoded_data = base64.b64encode(picture_data).decode("ascii")
@@ -232,18 +232,18 @@ class AudioTaggerService:
 
             audio.save()
             return True
-        except Exception as e:
-            self.logger.error(f"Error setting Opus tags: {e}")
+        except Exception:
+            self.logger.exception("Error setting Opus tags.")
             return False
 
     def set_aac_tags(
-            self, 
-            audio_file: AudioFile, 
-            track: AlbumTrackResponse, 
+            self,
+            audio_file: AudioFile,
+            track: AlbumTrackResponse,
             genre: Optional[str] = None
         ) -> bool:
         """
-        Asigna etiquetas a un archivo AAC raw. 
+        Asigna etiquetas a un archivo AAC raw.
         Nota: AAC raw tiene soporte limitado; se recomienda usar contenedores M4A.
 
         Args:
@@ -276,6 +276,6 @@ class AudioTaggerService:
 
             audio.save()
             return True
-        except Exception as e:
-            self.logger.error(f"Error setting AAC tags: {e}")
+        except Exception:
+            self.logger.exception("Error setting AAC tags.")
             return False
