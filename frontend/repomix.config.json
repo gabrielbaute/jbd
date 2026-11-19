@@ -1,0 +1,40 @@
+{
+  "output": {
+    "filePath": "repomix-output.xml",
+    "style": "xml",
+    "fileSummary": true,
+    "directoryStructure": true,
+    "files": true,
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "showLineNumbers": false,
+    "copyToClipboard": false,
+    "includeEmptyDirectories": false,
+    "parsableStyle": true,
+    "git": {
+      "includeDiffs": true,
+      "includeLogs": true,
+      "includeLogsCount": 50
+    }
+  },
+  "include": [],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "repomix.config.json",
+      "*.lock",
+      "package-lock.json",
+      "node_modules/",
+      ".vscode/",
+      ".env",
+      ".env.*"
+    ]
+  },
+  "security": {
+    "enableSecurityCheck": true
+  },
+  "tokenCount": {
+    "encoding": "o200k_base"
+  }
+}
