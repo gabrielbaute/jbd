@@ -27,7 +27,7 @@ class YouTubeService:
         if video_id == None:
             self.logger.warning("Se recibió un ID de Video nulo")
             return None
-        
+
         try:
             song = self.ytmusic.get_song(video_id)
             mc = song.get("microformat", {})
@@ -48,10 +48,10 @@ class YouTubeService:
                 publish_date=microformat.get("publishDate"),
                 upload_date=microformat.get("uploadDate")
             )
-        except Exception as e:
-            self.logger.error(f"Error al obtener la canción con ID {video_id}: {e}")
+        except Exception:
+            self.logger.exception(f"Error al obtener la canción con ID {video_id}")
             return None
-        
+
     def get_tracklist_from_playlist(self, playlist_id: str) -> Optional[PlaylistResponse]:
         """
         Obtiene la lista de canciones de una playlist a partir de su ID.
@@ -85,8 +85,8 @@ class YouTubeService:
                     for track in tracks
                 ],
             )
-        except Exception as e:
-            self.logger.error(f"Error al obtener la playlist desde el ID {playlist_id}: {e}")
+        except Exception:
+            self.logger.exception(f"Error al obtener la playlist desde el ID {playlist_id}.")
             return None
 
     def process_track(self, track: dict, total_tracks: int, year: int = None) -> Optional[AlbumTrackResponse]:
@@ -128,9 +128,9 @@ class YouTubeService:
             )
 
             return track_response
-        except Exception as e:
-            self.logger.error(f"Error al obtener la canción con ID {track.get("videoId")}: {e}")
-            return None        
+        except Exception:
+            self.logger.exception(f"Error al obtener la canción con ID {track.get("videoId")}")
+            return None
 
     def get_tracklist_from_album_playlist_id(self, playlist_id: str) -> Optional[AlbumResponse]:
         """
@@ -160,6 +160,6 @@ class YouTubeService:
             )
 
             return album_response
-        except Exception as e:
-            self.logger.error(f"Error al obtener el álbum desde el ID {album_id}: {e}")
+        except Exception:
+            self.logger.exception(f"Error al obtener el álbum desde el ID {album_id}")
             return None
