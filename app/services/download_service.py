@@ -38,7 +38,7 @@ class DownloaderService:
         self.lyrics_service: LyricService = LyricService(settings)
         self.logger = logging.getLogger(self.__class__.__name__)
         self.progress_callback: Optional[ProgressCallback] = None
-    
+
     async def _emit_progress(self, current: int, total: int, status: str, track_title: str = ""):
         """
         Envía una actualización de progreso si hay un callback configurado.
@@ -101,7 +101,7 @@ class DownloaderService:
 
         album_path = self.output_path / artist_name / f"{album_name} ({year})"
         album_path.mkdir(parents=True, exist_ok=True)
-        
+
         return album_path
 
     def _build_output_path(self, track: AlbumTrackResponse, format_ext: Format = Format.MP3) -> Path:
@@ -116,11 +116,11 @@ class DownloaderService:
         """
         artist_name = self._sanitize_filename(track.artists[0] if track.artists else "Unknown Artist")
         track_name = self._sanitize_filename(track.title if track.title else "Unknown Track")
-        
+
         return self.album_path / f"{track.track_number} - {artist_name} - {track_name}.{format_ext.value}"
-    
+
     def _configure_ydl_opts(
-            self, 
+            self,
             output_path: Optional[Path],
             format_ext: Format = Format.MP3,
             bitrate: Bitrate = Bitrate.B_128K
@@ -150,9 +150,9 @@ class DownloaderService:
             "cookiefile": self.cookies_path,
         }
         return self.ydl_opts
-    
+
     def _download_track(
-            self, 
+            self,
             track_data: AlbumTrackResponse,
             format_ext: Format = Format.MP3,
             bitrate: Bitrate = Bitrate.B_128K,
@@ -172,7 +172,7 @@ class DownloaderService:
         """
         output_path = self._build_output_path(track=track_data, format_ext=format_ext)
         self.logger.info(f"Descargando: {track_data.title} desde {track_data.url_canonical} a {output_path.name}")
-       
+
         ydl_opts = self._configure_ydl_opts(output_path, format_ext, bitrate)
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
@@ -185,32 +185,32 @@ class DownloaderService:
                     file_format=format_ext,
                     file_size=output_path.stat().st_size
                 )
-            except Exception as e:
-                self.logger.error(f"Error descargando {track_data.title} desde {track_data.url_canonical}: {e}")
+            except Exception:
+                self.logger.exception(f"Error descargando {track_data.title} desde {track_data.url_canonical}")
                 return None
 
     def _download_lyrics(self, track: AlbumTrackResponse, output_path: Path) -> Optional[Path]:
         """
         Descarga y guarda el archivo de letras.
-        
+
         Args:
            track (AlbumTrackResponse): Objeto track generado desde youtube.
            output_path (Path): Ruta de salida para el archivo de letras.
-        
+
         Returns:
            Optional[Path]: Ruta al archivo de letras descargado.
-        
+
         Raises:
             StorageError: Si ocurre un error al crear el archivo de letras.
         """
         # 1. Obtener la letra
         lyrics = self.lyrics_service.get_lyrics_with_fallback(track)
-        
+
         # 2. Si no obtenemos la letra, salimos
         if not lyrics:
             self.logger.warning(f"No se encontraron letras para {track.title}")
             return None
-        
+
         # 3. Creamos el archivo.
         try:
             lrc_path = output_path.with_suffix(".lrc")
@@ -219,11 +219,11 @@ class DownloaderService:
             if lrc_path.stat().st_size > 0:
                 return lrc_path
         except Exception as e:
-            self.logger.error(f"Error al crear el archivo de letras: {e}")
+            self.logger.exception("Error al crear el archivo de letras.")
             raise StorageError(f"No se pudo crear el archivo de letras: {e}")
 
     def download_album_to_mp3(
-            self, 
+            self,
             bitrate: Bitrate = Bitrate.B_128K,
             genre: Optional[str] = None
         ) -> AudioFilesList:
@@ -243,35 +243,35 @@ class DownloaderService:
         cover = self.cover_service.download_image(self.album_data.thumbnail, self.album_path / "cover.jpg")
         if cover:
             cover_data = cover.read_bytes()
-        
+
         # 2. Descargar las pistas
         for track in self.album_data.tracks:
             audio_file = self._download_track(track, format_ext=Format.MP3, bitrate=bitrate)
-            
+
             if audio_file:
                 self.tag_service.set_mp3_tags(
-                    audio_file=audio_file, 
-                    track=track, 
+                    audio_file=audio_file,
+                    track=track,
                     genre=genre,
-                    cover_data=cover_data, 
+                    cover_data=cover_data,
                 )
-                
+
                 # 3. Obtenemos el archivo de letras.
                 lyrics_path = self._download_lyrics(track, audio_file.file_path)
-                
+
                 if lyrics_path:
                     audio_file.lyric_path = lyrics_path
-                
+
                 tracks.append(audio_file)
-        
+
         return AudioFilesList(
             count=len(tracks),
             total_size=sum([track.file_size for track in tracks]),
             audio_files=tracks
         )
-    
+
     def download_album_to_m4a(
-            self, 
+            self,
             bitrate: Bitrate = Bitrate.B_128K,
             genre: Optional[str] = None
         ) -> AudioFilesList:
@@ -281,7 +281,7 @@ class DownloaderService:
         Args:
             bitrate (Bitrate, optional): Calidad de audio deseada.
             genre (str, optional): Género musical.
-        
+
         Returns:
             AudioFilesList: Lista de objetos AudioFile con la información de los archivos descargados.
         """
@@ -291,35 +291,35 @@ class DownloaderService:
         cover = self.cover_service.download_image(self.album_data.thumbnail, self.album_path / "cover.jpg")
         if cover:
             cover_data = cover.read_bytes()
-        
+
         # 2. Descargar las pistas
         for track in self.album_data.tracks:
             audio_file = self._download_track(track, format_ext=Format.M4A, bitrate=bitrate)
-            
+
             if audio_file:
                 self.tag_service.set_m4a_tags(
-                    audio_file=audio_file, 
-                    tags=track, 
-                    cover_data=cover_data, 
+                    audio_file=audio_file,
+                    tags=track,
+                    cover_data=cover_data,
                     genre=genre
                 )
-                
+
                 # 3. Obtenemos el archivo de letras.
                 lyrics_path = self._download_lyrics(track, audio_file.file_path)
-                
+
                 if lyrics_path:
                     audio_file.lyric_path = lyrics_path
-                
+
                 tracks.append(audio_file)
-        
+
         return AudioFilesList(
             count=len(tracks),
             total_size=sum([track.file_size for track in tracks]),
             audio_files=tracks
-        )   
-    
+        )
+
     async def download_album(
-        self, 
+        self,
         format_ext: Format = Format.MP3,
         bitrate: Bitrate = Bitrate.B_128K,
         genre: Optional[str] = None,
@@ -333,7 +333,7 @@ class DownloaderService:
             bitrate (Bitrate, optional): Calidad de audio deseada.
             genre (str, optional): Género musical.
             progress_cb (Optional[ProgressCallback], optional): Callback de progreso.
-        
+
         Returns:
             AudioFilesList: Lista de objetos AudioFile con la información de los archivos descargados.
         """
@@ -349,9 +349,9 @@ class DownloaderService:
         # 2. Bucle de Tracks
         for index, track in enumerate(self.album_data.tracks, 1):
             await self._emit_progress(index - 1, total_tracks, f"Procesando...", track.title)
-            
+
             audio_file = self._download_track(track, format_ext=format_ext, bitrate=bitrate)
-            
+
             if audio_file:
                 if format_ext == Format.MP3:
                     self.tag_service.set_mp3_tags(audio_file, track, genre, cover_data)
@@ -362,25 +362,25 @@ class DownloaderService:
                 if format_ext == Format.OGG:
                     self.tag_service.set_ogg_tags(audio_file, track, genre, cover_data)
                 if format_ext == Format.AAC:
-                    self.tag_service.set_aac_tags(audio_file, track, genre, cover_data)                
+                    self.tag_service.set_aac_tags(audio_file, track, genre, cover_data)
 
                 # Letras
                 lyrics_path = self._download_lyrics(track, audio_file.file_path)
                 if lyrics_path:
                     audio_file.lyric_path = lyrics_path
-                
+
                 tracks.append(audio_file)
-        
+
         await self._emit_progress(total_tracks, total_tracks, "Completado", "Finalizado")
-        
+
         return AudioFilesList(
             count=len(tracks),
             total_size=sum([t.file_size for t in tracks]),
             audio_files=tracks
         )
-    
+
     async def async_download_album(
-        self, 
+        self,
         format_ext: Format = Format.MP3,
         bitrate: Bitrate = Bitrate.B_128K,
         genre: Optional[str] = None,
@@ -412,25 +412,25 @@ class DownloaderService:
         for index, track in enumerate(self.album_data.tracks, 1):
             # Este emit_progress ahora sí llegará al cliente porque el loop estará libre
             await self._emit_progress(index - 1, total_tracks, f"Descargando...", track.title)
-            
+
             # Ejecutamos la descarga pesada en un hilo separado
             download_func = partial(self._download_track, track, format_ext, bitrate)
             audio_file = await loop.run_in_executor(None, download_func)
             await asyncio.sleep(0.01)
-            
+
             if audio_file:
                 # El etiquetado también es bloqueante (I/O de disco), lo ideal es executor
-                
+
                 if format_ext == Format.MP3:
                     await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas ID3...", track.title)
                     tag_func = partial(self.tag_service.set_mp3_tags, audio_file, track, genre, cover_data)
                     await asyncio.sleep(0.01)
-                
+
                 if format_ext == Format.M4A:
                     await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas MP4...", track.title)
                     tag_func = partial(self.tag_service.set_m4a_tags, audio_file, track, genre, cover_data)
                     await asyncio.sleep(0.01)
-                
+
                 if format_ext == Format.AAC:
                     await self._emit_progress(index - 1, total_tracks, f"Aplicando etiquetas AAC...", track.title)
                     tag_func = partial(self.tag_service.set_aac_tags, audio_file, track, genre, cover_data)
@@ -447,20 +447,20 @@ class DownloaderService:
                     await asyncio.sleep(0.01)
 
                 await loop.run_in_executor(None, tag_func)
-                
+
                 # Letras (I/O bloqueante)
                 await self._emit_progress(index - 1, total_tracks, f"Buscando letras en LRCLIB...", track.title)
                 lyrics_func = partial(self._download_lyrics, track, audio_file.file_path)
                 lyrics_path = await loop.run_in_executor(None, lyrics_func)
                 await asyncio.sleep(0.01)
-                
+
                 if lyrics_path:
                     audio_file.lyric_path = lyrics_path
                     await self._emit_progress(index - 1, total_tracks, f"Letras sincronizadas guardadas.", track.title)
                     await asyncio.sleep(0.01)
-                
+
                 tracks.append(audio_file)
-        
+
         await self._emit_progress(total_tracks, total_tracks, "Completado", "Finalizado")
         return AudioFilesList(
             count=len(tracks),

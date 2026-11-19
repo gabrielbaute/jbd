@@ -31,7 +31,7 @@ async def analyze_album(
     playlist_id = ParserService.extract_playlist_id(url)
     if not playlist_id:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail="La URL proporcionada no es un enlace de lista de reproducción de álbum válido."
         )
 
@@ -40,7 +40,10 @@ async def analyze_album(
         album_data = yt_service.get_tracklist_from_album_playlist_id(playlist_id)
         if not album_data:
             raise HTTPException(status_code=404, detail="No se pudo encontrar información para este álbum.")
-        
+
         return album_data
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error procesando el álbum: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={"error:": e}
+        )
