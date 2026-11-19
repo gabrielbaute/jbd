@@ -11,38 +11,38 @@ router = APIRouter(prefix="/settings", tags=["Settings"])
 async def get_current_settings(settings: AppSettings = Depends(get_settings)):
     """
     Retorna la configuración actual procesada por la aplicación.
-    
+
     Args:
         settings (AppSettings): Instancia única de configuración.
-        
+
     Returns:
         dict: Diccionario con los valores actuales de configuración.
     """
     # Excluimos campos internos o excesivamente técnicos para la UI
     exclude_set = {
-        "BASE_PATH", 
-        "STATIC_PATH", 
-        "TMP_PATH", 
-        "INSTANCE_PATH", 
+        "BASE_PATH",
+        "STATIC_PATH",
+        "TMP_PATH",
+        "INSTANCE_PATH",
         "LOGS_PATH"
     }
     return settings.model_dump(exclude=exclude_set)
 
 @router.post("/")
 async def update_settings(
-    new_data: Dict[str, str], 
+    new_data: Dict[str, str],
     settings: AppSettings = Depends(get_settings)
 ):
     """
     Actualiza el archivo .env persistente con los nuevos valores proporcionados.
-    
+
     Args:
         new_data (Dict[str, str]): Diccionario con las llaves y valores a modificar.
         settings (AppSettings): Instancia única de configuración.
-        
+
     Returns:
         dict: Mensaje de confirmación.
-        
+
     Raises:
         HTTPException: Si ocurre un error al escribir el archivo.
     """
@@ -86,6 +86,6 @@ APP_URL={settings.APP_URL}
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, 
-            detail=f"Error al actualizar la configuración: {str(e)}"
+            status_code=500,
+            detail={"Error al actualizar la configuración:": e}
         )

@@ -22,9 +22,9 @@ class DownloadManager:
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def download_album(
-            self, 
-            album_playlist_url: str, 
-            genre: Optional[str] = None, 
+            self,
+            album_playlist_url: str,
+            genre: Optional[str] = None,
             bitrate: Optional[Bitrate] = Bitrate.B_128K,
             format: Optional[Format] = Format.MP3
         ) -> AudioFilesList:
@@ -36,21 +36,21 @@ class DownloadManager:
             genre (Optional[str]): Género musical del album.
             bitrate (Optional[Bitrate]): Bitrate de salida de los archivos de audio.
             format (Optional[Format]): Formato de salida de los archivos de audio. Por defecto Mp3.
-        
+
         Returns:
             AudioFilesList: lista y metadata de los archivos generados.
         """
-        album_id: str = ParserService.extract_playlist_id(album_playlist_url)
-        album_data: AlbumResponse = self.youtube_service.get_tracklist_from_album_playlist_id(album_id)
+        album_id: Optional[str] = ParserService.extract_playlist_id(album_playlist_url)
+        album_data: Optional[AlbumResponse] = self.youtube_service.get_tracklist_from_album_playlist_id(album_id)
 
         download_service = DownloaderService(settings=self.settings, album_data=album_data)
-        
+
         if format == Format.MP3:
             downloads: AudioFilesList = download_service.download_album_to_mp3(
                 genre=genre,
                 bitrate=bitrate
             )
-        
+
         if format == Format.M4A:
             downloads: AudioFilesList = download_service.download_album_to_m4a(
                 genre=genre,

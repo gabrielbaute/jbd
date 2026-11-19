@@ -26,13 +26,13 @@ class AppSettings(BaseSettings):
     TMP_PATH: Path = DATA_PATH / "tmp"
     YTDLP_COOKIES_PATH: Path = SETTINGS_PATH / "ytdlp.cookies"
 
-    # ------------ API ------------ 
+    # ------------ API ------------
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000
     API_RELOAD: bool = False
     API_LOG_LEVEL: str = "info"
     APP_URL: str = f"http://{API_HOST}:{API_PORT}"
-    
+
     # Listas de configuración CORS / API (Valores por defecto internos)
     API_ALLOW_METHODS: List[str] = ["*"]
     API_ALLOW_HEADERS: List[str] = ["*"]
@@ -69,7 +69,7 @@ class AppSettings(BaseSettings):
         """
         # 1. Aseguramos carpetas
         self.ensure_dirs()
-        
+
         # 2. Generamos el .env solo si no existe
         if not self.USER_ENV_FILE.exists():
             env_content = f"""# JBD PERSISTENT CONFIGURATION
@@ -97,6 +97,7 @@ APP_URL={self.APP_URL}
                 print(f"[*] Configuración inicial generada en: {self.USER_ENV_FILE}")
             except Exception as e:
                 print(f"[*] Error al escribir el archivo de configuración: {e}")
+                raise
 
     @field_validator("API_ALLOW_ORIGINS", "API_ALLOW_METHODS", "API_ALLOW_HEADERS", mode="before")
     @classmethod
@@ -107,7 +108,7 @@ APP_URL={self.APP_URL}
         if isinstance(v, str):
             return [item.strip() for item in v.split(",") if item.strip()]
         return v
-    
+
     model_config = SettingsConfigDict(
         env_file=[".env", "jbd/settings/.env"],
         env_file_encoding="utf-8",
