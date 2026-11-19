@@ -14,7 +14,7 @@ class CoverDownloaderService:
         """Inicializa el servicio."""
         self.logger = logging.getLogger(self.__class__.__name__)
         self.download_timeout = settings.DOWNLOAD_TIMEOUT
-    
+
     def download_image(self, url: str, output_path: Path) -> Optional[Path]:
         """
         Descarga una imagen a un directorio específico.
@@ -22,14 +22,14 @@ class CoverDownloaderService:
         Args:
             url (str): URL desde la que se descargará la imagen
             output_path (Path): Directorio en el que se guardará la imagen
-            
+
         Returns:
             Optional[Path]: Ruta al archivo descargado o None en caso de error
         """
         if not url:
             self.logger.warning("No URL provided for image download.")
             return None
-        
+
         try:
             response = requests.get(url, timeout=self.download_timeout)
             response.raise_for_status()
@@ -38,8 +38,8 @@ class CoverDownloaderService:
             output_path.write_bytes(response.content)
             self.logger.debug(f"Cover descargado satisfactoriamente en: {output_path}")
             return output_path
-        except requests.exceptions.RequestException as e:
-            self.logger.error(f"Error descargando la imagen desde {url}: {e}")
+        except requests.exceptions.RequestException:
+            self.logger.exception(f"Error descargando la imagen desde {url}")
             return None
 
     def get_image_from_url(self, url: str) -> Optional[bytes]:
@@ -57,6 +57,6 @@ class CoverDownloaderService:
             response.raise_for_status()
             self.logger.info(f"Imagen descargada satisfactoriamente desde {url}")
             return response.content if response.status_code == 200 else None
-        except requests.exceptions.RequestException as e:
-            self.logger.error(f"Error descargando imagen desde {url}: {e}")
+        except requests.exceptions.RequestException:
+            self.logger.exception(f"Error descargando imagen desde {url}")
             return None
