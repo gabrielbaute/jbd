@@ -89,7 +89,7 @@ class YouTubeService:
             self.logger.exception(f"Error al obtener la playlist desde el ID {playlist_id}.")
             return None
 
-    def process_track(self, track: dict, total_tracks: int, year: int = None) -> Optional[AlbumTrackResponse]:
+    def process_track(self, track: dict, total_tracks: int, year: Optional[int] = None) -> Optional[AlbumTrackResponse]:
         """
         Procesa una canción a partir de su ID de video, obteniendo sus detalles.
 
